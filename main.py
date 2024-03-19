@@ -1,5 +1,29 @@
 import pygame
-from typing import TypedDict
+from typing import TypedDict, Tuple
+
+
+class SquareConfig(TypedDict):
+    height: int
+    width: int
+    location_x: int
+    location_y: int
+    color: Tuple[int]
+    display: pygame.Surface
+
+
+class Square:
+    def __init__(self, config: SquareConfig):
+        self.height = config["height"]
+        self.width = config["width"]
+        self.location_x = config["location_x"]
+        self.location_y = config["location_y"]
+        self.color = config["color"]
+        self.display = config["display"]
+
+        self.change_color(self.color)
+
+    def change_color(self, color: Tuple[int]):
+        pygame.draw.rect(self.display, color, (self.location_x, self.location_y, self.width, self.height))
 
 
 class GameConfig(TypedDict):
