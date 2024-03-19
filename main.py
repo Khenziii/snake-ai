@@ -81,6 +81,16 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                elif event.type == pygame.KEYDOWN:
+                    match event.unicode:
+                        case "w":
+                            self.snake_direction = Direction.UP
+                        case "s":
+                            self.snake_direction = Direction.DOWN
+                        case "a":
+                            self.snake_direction = Direction.LEFT
+                        case "d":
+                            self.snake_direction = Direction.RIGHT
 
             self.__render_board()
             self.__move_snake()
@@ -135,6 +145,9 @@ class Game:
 
     def __get_square_by_x_and_y(self, x: int, y: int) -> SquaresType:
         results = [d for d in self.tiles if d.get("x") == x and d.get("y") == y]
+        if len(results) == 0:
+            raise ValueError(f"Couldn't find any tiles for: x: {x} & y: {y}")
+
         return results[0]
 
     def __render_board(self):
@@ -148,19 +161,21 @@ class Game:
         square_to_remove = self.__get_square_by_x_and_y(tail["x"], tail["y"])
         self.__unset_square_as_snake(square_to_remove)
 
+        # !!!IMPORTANT!!!
+        # The Y axis is reversed for some reason, this is going to be looked into soon
         match self.snake_direction:
             case Direction.UP:
+                if head["y"] <= 0:
+                    square_to_add = self.__get_square_by_x_and_y(head["x"], self.game_grid_size - 1)
+                else:
+                    square_to_add = self.__get_square_by_x_and_y(head["x"], head["y"] - 1)
+
+                self.__set_square_as_snake(square_to_add)
+            case Direction.DOWN:
                 if head["y"] + 1 >= self.game_grid_size:
                     square_to_add = self.__get_square_by_x_and_y(head["x"], 0)
                 else:
                     square_to_add = self.__get_square_by_x_and_y(head["x"], head["y"] + 1)
-
-                self.__set_square_as_snake(square_to_add)
-            case Direction.DOWN:
-                if head["y"] - 1 <= self.game_grid_size:
-                    square_to_add = self.__get_square_by_x_and_y(head["x"], self.game_grid_size)
-                else:
-                    square_to_add = self.__get_square_by_x_and_y(head["x"], head["y"] - 1)
 
                 self.__set_square_as_snake(square_to_add)
             case Direction.RIGHT:
@@ -171,8 +186,8 @@ class Game:
 
                 self.__set_square_as_snake(square_to_add)
             case Direction.LEFT:
-                if head["x"] - 1 <= self.game_grid_size:
-                    square_to_add = self.__get_square_by_x_and_y(self.game_grid_size, head["y"])
+                if head["x"] <= 0:
+                    square_to_add = self.__get_square_by_x_and_y(self.game_grid_size - 1, head["y"])
                 else:
                     square_to_add = self.__get_square_by_x_and_y(head["x"] - 1, head["y"])
 
@@ -183,7 +198,7 @@ gameConfig: GameConfig = {
     "window_size_px": 1000,
     "window_title": "Snake Game",
     "game_speed": 10,
-    "game_grid_size": 20,
+    "game_grid_size": 50,
     "game_snake_start_length": 5,
 }
 game = Game(config=gameConfig)
