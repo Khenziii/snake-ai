@@ -1,6 +1,7 @@
 import pygame
 from typing import TypedDict, Tuple, List
 from enum import Enum
+from random import randint
 
 
 class Direction(Enum):
@@ -43,6 +44,7 @@ class Position(TypedDict):
 
 class SquaresType(Position):
     snake: bool
+    apple: bool
 
 
 class GameConfig(TypedDict):
@@ -51,6 +53,7 @@ class GameConfig(TypedDict):
     game_speed: int
     game_grid_size: int
     game_snake_start_length: int
+    game_apple_start_count: int
 
 
 class Game:
@@ -60,10 +63,12 @@ class Game:
         self.game_speed = config["game_speed"]
         self.game_grid_size = config["game_grid_size"]
         self.game_snake_start_length = config["game_snake_start_length"]
+        self.game_apple_start_count = config["game_apple_start_count"]
 
         self.tiles: List[SquaresType] = []
         self.snake_tiles: List[Position] = []
         self.snake_direction: Direction = Direction.RIGHT
+        self.apple_tiles: List[Position] = []
 
         self.__run()
 
@@ -75,6 +80,7 @@ class Game:
 
         self.__create_board()
         self.__create_snake()
+        self.__create_apples()
 
         self.running = True
         while self.running:
@@ -118,6 +124,7 @@ class Game:
                     "x": x,
                     "y": y,
                     "snake": False,
+                    "apple": False,
                     "square": square,
                 }
                 self.tiles.append(square_type)
@@ -143,6 +150,24 @@ class Game:
         else:
             print("WARNING: Tried to un-snake a square that's not a snake, something's probably wrong with the logic")
 
+    def __set_square_as_apple(self, square: SquaresType) -> SquaresType:
+        square.update({"apple": True})
+        square["square"].change_color((255, 0, 0))
+        self.apple_tiles.append(square)
+
+        return square
+
+    def __unset_square_as_apple(self, square: SquaresType):
+        square.update({"apple": False})
+        square["square"].change_color((0, 0, 0))
+
+        if square in self.apple_tiles:
+            self.apple_tiles.remove(square)
+        else:
+            print("WARNING: Tried to un-apple a square that's not an apple, something's probably wrong with the logic")
+
+        self.__generate_apple()
+
     def __get_square_by_x_and_y(self, x: int, y: int) -> SquaresType:
         results = [d for d in self.tiles if d.get("x") == x and d.get("y") == y]
         if len(results) == 0:
@@ -158,8 +183,16 @@ class Game:
         head: Position = self.snake_tiles[-1]
         tail: Position = self.snake_tiles[0]
 
+        eaten_an_apple = False
+        for apple in self.apple_tiles:
+            if head == apple:
+                square = self.__get_square_by_x_and_y(head["x"], head["y"])
+                self.__unset_square_as_apple(square)
+                eaten_an_apple = True
+
         square_to_remove = self.__get_square_by_x_and_y(tail["x"], tail["y"])
-        self.__unset_square_as_snake(square_to_remove)
+        if not eaten_an_apple:
+            self.__unset_square_as_snake(square_to_remove)
 
         # !!!IMPORTANT!!!
         # The Y axis is reversed for some reason, this is going to be looked into soon
@@ -193,12 +226,27 @@ class Game:
 
                 self.__set_square_as_snake(square_to_add)
 
+    def __generate_apple(self):
+        random_index = randint(0, len(self.tiles))
+
+        # check, if the tile is a snake or an apple
+        square = self.tiles[random_index]
+        if square["snake"] or square["apple"]:
+            return self.__generate_apple()
+
+        self.__set_square_as_apple(square)
+
+    def __create_apples(self):
+        for i in range(self.game_apple_start_count):
+            self.__generate_apple()
+
 
 gameConfig: GameConfig = {
     "window_size_px": 1000,
     "window_title": "Snake Game",
     "game_speed": 10,
     "game_grid_size": 50,
-    "game_snake_start_length": 5,
+    "game_snake_start_length": 1,
+    "game_apple_start_count": 5,
 }
 game = Game(config=gameConfig)
