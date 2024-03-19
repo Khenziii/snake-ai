@@ -110,6 +110,15 @@ class Game:
 
         return square
 
+    def __unset_square_as_snake(self, square: SquaresType):
+        square.update({"snake": False})
+        square["square"].change_color((0, 0, 0))
+
+        if square in self.snake_tiles:
+            self.snake_tiles.remove(square)
+        else:
+            print("WARNING: Tried to un-snake a square that's not a snake, something's probably wrong with the logic")
+
 
 gameConfig: GameConfig = {
     "window_size_px": 1000,
