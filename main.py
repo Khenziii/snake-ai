@@ -2,15 +2,6 @@ import pygame
 from typing import TypedDict, Tuple, List
 
 
-class Position(TypedDict):
-    x: int
-    y: int
-
-
-class SquaresType(Position):
-    snake: bool
-
-
 class SquareConfig(TypedDict):
     size: int
     location_x: int
@@ -33,12 +24,22 @@ class Square:
         pygame.draw.rect(self.display, color, (self.location_x, self.location_y, self.size, self.size))
 
 
+class Position(TypedDict):
+    x: int
+    y: int
+    square: Square
+
+
+class SquaresType(Position):
+    snake: bool
+
+
 class GameConfig(TypedDict):
     window_size_px: int
     window_title: str
     game_speed: int
     game_grid_size: int
-    game_snake_length: int
+    game_snake_start_length: int
 
 
 class Game:
@@ -47,7 +48,7 @@ class Game:
         self.window_title = config["window_title"]
         self.game_speed = config["game_speed"]
         self.game_grid_size = config["game_grid_size"]
-        self.game_snake_length = config["game_snake_length"]
+        self.game_snake_start_length = config["game_snake_start_length"]
 
         self.tiles: List[SquaresType] = []
         self.snake_tiles: List[Position] = []
@@ -87,17 +88,27 @@ class Game:
                     "color": (0, 0, 0),
                     "display": self.display
                 }
-                Square(config=square_config)
+                square = Square(config=square_config)
 
-                square: SquaresType = {
+                square_type: SquaresType = {
                     "x": x,
                     "y": y,
-                    "snake": False
+                    "snake": False,
+                    "square": square,
                 }
-                self.tiles.append(square)
+                self.tiles.append(square_type)
 
     def __create_snake(self):
-        pass
+        for i in range(self.game_snake_start_length):
+            square: SquaresType = self.tiles[i]
+            self.__set_square_as_snake(square)
+
+    def __set_square_as_snake(self, square: SquaresType) -> SquaresType:
+        square.update({"snake": True})
+        square["square"].change_color((255, 255, 255))
+        self.snake_tiles.append(square)
+
+        return square
 
 
 gameConfig: GameConfig = {
@@ -105,6 +116,6 @@ gameConfig: GameConfig = {
     "window_title": "Snake Game",
     "game_speed": 60,
     "game_grid_size": 5,
-    "game_snake_length": 5,
+    "game_snake_start_length": 5,
 }
 game = Game(config=gameConfig)
