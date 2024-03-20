@@ -152,6 +152,16 @@ class Game:
         for tile in self.tiles:
             tile["square"].rerender()
 
+    def __check_if_square_in_body(self, tile: SquaresType):
+        snake_tiles_without_head = self.snake_tiles[::-1]
+        for snake_tile in snake_tiles_without_head:
+            square_position = self.__get_square_by_x_and_y(tile["x"], tile["y"])
+            if snake_tile == square_position:
+                self.restart = True
+                return True
+
+        return False
+
     def __move_snake(self):
         head: Position = self.snake_tiles[-1]
         tail: Position = self.snake_tiles[0]
@@ -176,28 +186,29 @@ class Game:
                     return
 
                 square_to_add = self.__get_square_by_x_and_y(head["x"], head["y"] - 1)
-                self.__set_square_as_snake(square_to_add)
             case Direction.DOWN:
                 if head["y"] + 1 >= self.game_grid_size:
                     self.restart = True
                     return
 
                 square_to_add = self.__get_square_by_x_and_y(head["x"], head["y"] + 1)
-                self.__set_square_as_snake(square_to_add)
             case Direction.RIGHT:
                 if head["x"] + 1 >= self.game_grid_size:
                     self.restart = True
                     return
 
                 square_to_add = self.__get_square_by_x_and_y(head["x"] + 1, head["y"])
-                self.__set_square_as_snake(square_to_add)
             case Direction.LEFT:
                 if head["x"] <= 0:
                     self.restart = True
                     return
 
                 square_to_add = self.__get_square_by_x_and_y(head["x"] - 1, head["y"])
-                self.__set_square_as_snake(square_to_add)
+
+        if self.__check_if_square_in_body(square_to_add):
+            return
+
+        self.__set_square_as_snake(square_to_add)
 
     def __generate_apple(self):
         random_index = randint(0, len(self.tiles))
