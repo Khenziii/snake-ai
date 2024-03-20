@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import TypedDict, Tuple
 from enum import Enum
 from game.square import Square
 

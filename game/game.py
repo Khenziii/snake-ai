@@ -1,6 +1,6 @@
 import pygame
 from typing import TypedDict, List
-from game.square import Square, SquareConfig
+from game.square import Square, SquareConfig, SquareColor
 from game.types import Direction, Position, SquaresType
 from random import randint
 
@@ -12,6 +12,9 @@ class GameConfig(TypedDict):
     game_grid_size: int
     game_snake_start_length: int
     game_apple_start_count: int
+    game_snake_color: SquareColor
+    game_apple_color: SquareColor
+    game_background_color: SquareColor
 
 
 class Game:
@@ -22,6 +25,9 @@ class Game:
         self.game_grid_size = config["game_grid_size"]
         self.game_snake_start_length = config["game_snake_start_length"]
         self.game_apple_start_count = config["game_apple_start_count"]
+        self.game_snake_color = config["game_snake_color"]
+        self.game_apple_color = config["game_apple_color"]
+        self.game_background_color = config["game_background_color"]
 
         self.tiles: List[SquaresType] = []
         self.snake_tiles: List[Position] = []
@@ -73,7 +79,7 @@ class Game:
                     "size": size,
                     "location_x": x * size,
                     "location_y": y * size,
-                    "color": (0, 0, 0),
+                    "color": self.game_background_color,
                     "display": self.display
                 }
                 square = Square(config=square_config)
@@ -94,14 +100,14 @@ class Game:
 
     def __set_square_as_snake(self, square: SquaresType) -> SquaresType:
         square.update({"snake": True})
-        square["square"].change_color((255, 255, 255))
+        square["square"].change_color(self.game_snake_color)
         self.snake_tiles.append(square)
 
         return square
 
     def __unset_square_as_snake(self, square: SquaresType):
         square.update({"snake": False})
-        square["square"].change_color((0, 0, 0))
+        square["square"].change_color(self.game_background_color)
 
         if square in self.snake_tiles:
             self.snake_tiles.remove(square)
@@ -110,14 +116,14 @@ class Game:
 
     def __set_square_as_apple(self, square: SquaresType) -> SquaresType:
         square.update({"apple": True})
-        square["square"].change_color((255, 0, 0))
+        square["square"].change_color(self.game_apple_color)
         self.apple_tiles.append(square)
 
         return square
 
     def __unset_square_as_apple(self, square: SquaresType):
         square.update({"apple": False})
-        square["square"].change_color((255, 255, 255))
+        square["square"].change_color(self.game_snake_color)
 
         if square in self.apple_tiles:
             self.apple_tiles.remove(square)

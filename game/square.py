@@ -1,12 +1,14 @@
 import pygame
 from typing import TypedDict, Tuple
 
+SquareColor = Tuple[int, int, int]
+
 
 class SquareConfig(TypedDict):
     size: int
     location_x: int
     location_y: int
-    color: Tuple[int, int, int]
+    color: SquareColor
     display: pygame.Surface
 
 

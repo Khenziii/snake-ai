@@ -7,5 +7,8 @@ gameConfig: GameConfig = {
     "game_grid_size": 50,
     "game_snake_start_length": 1,
     "game_apple_start_count": 5,
+    "game_snake_color": (255, 255, 255),
+    "game_apple_color": (255, 0, 0),
+    "game_background_color": (0, 0, 0),
 }
 game = Game(config=gameConfig)
