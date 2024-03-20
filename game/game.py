@@ -211,7 +211,7 @@ class Game:
         self.__set_square_as_snake(square_to_add)
 
     def __generate_apple(self):
-        random_index = randint(0, len(self.tiles))
+        random_index = randint(0, len(self.tiles) - 1)
 
         # check, if the tile is a snake or an apple
         square = self.tiles[random_index]
