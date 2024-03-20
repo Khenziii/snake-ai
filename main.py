@@ -159,7 +159,7 @@ class Game:
 
     def __unset_square_as_apple(self, square: SquaresType):
         square.update({"apple": False})
-        square["square"].change_color((0, 0, 0))
+        square["square"].change_color((255, 255, 255))
 
         if square in self.apple_tiles:
             self.apple_tiles.remove(square)
