@@ -33,6 +33,7 @@ class Game:
         self.snake_tiles: List[Position] = []
         self.snake_direction: Direction = Direction.RIGHT
         self.apple_tiles: List[Position] = []
+        self.restart = False
 
         self.__run()
 
@@ -42,12 +43,13 @@ class Game:
         self.display = pygame.display.set_mode((self.window_size_px, self.window_size_px))
         pygame.display.set_caption(self.window_title)
 
-        self.__create_board()
-        self.__create_snake()
-        self.__create_apples()
+        self.__start_game()
 
         self.running = True
         while self.running:
+            if self.restart:
+                self.__restart_game()
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -62,7 +64,6 @@ class Game:
                         case "d":
                             self.snake_direction = Direction.RIGHT
 
-            self.__render_board()
             self.__move_snake()
             pygame.display.flip()  # .flip() updates the display
             pygame.time.Clock().tick(self.game_speed)  # FPS cap
@@ -93,6 +94,8 @@ class Game:
                 }
                 self.tiles.append(square_type)
 
+        self.__reset_snake_direction()
+
     def __create_snake(self):
         for i in range(self.game_snake_start_length):
             square: SquaresType = self.tiles[i]
@@ -121,16 +124,22 @@ class Game:
 
         return square
 
-    def __unset_square_as_apple(self, square: SquaresType):
+    def __unset_square_as_apple(self, square: SquaresType, color: SquareColor | None = None, generate_new_apple: bool = True):
+        if color is None:
+            new_color = self.game_snake_color
+        else:
+            new_color = color
+
         square.update({"apple": False})
-        square["square"].change_color(self.game_snake_color)
+        square["square"].change_color(new_color)
 
         if square in self.apple_tiles:
             self.apple_tiles.remove(square)
         else:
             print("WARNING: Tried to un-apple a square that's not an apple, something's probably wrong with the logic")
 
-        self.__generate_apple()
+        if generate_new_apple:
+            self.__generate_apple()
 
     def __get_square_by_x_and_y(self, x: int, y: int) -> SquaresType:
         results = [d for d in self.tiles if d.get("x") == x and d.get("y") == y]
@@ -163,31 +172,31 @@ class Game:
         match self.snake_direction:
             case Direction.UP:
                 if head["y"] <= 0:
-                    square_to_add = self.__get_square_by_x_and_y(head["x"], self.game_grid_size - 1)
-                else:
-                    square_to_add = self.__get_square_by_x_and_y(head["x"], head["y"] - 1)
+                    self.restart = True
+                    return
 
+                square_to_add = self.__get_square_by_x_and_y(head["x"], head["y"] - 1)
                 self.__set_square_as_snake(square_to_add)
             case Direction.DOWN:
                 if head["y"] + 1 >= self.game_grid_size:
-                    square_to_add = self.__get_square_by_x_and_y(head["x"], 0)
-                else:
-                    square_to_add = self.__get_square_by_x_and_y(head["x"], head["y"] + 1)
+                    self.restart = True
+                    return
 
+                square_to_add = self.__get_square_by_x_and_y(head["x"], head["y"] + 1)
                 self.__set_square_as_snake(square_to_add)
             case Direction.RIGHT:
                 if head["x"] + 1 >= self.game_grid_size:
-                    square_to_add = self.__get_square_by_x_and_y(0, head["y"])
-                else:
-                    square_to_add = self.__get_square_by_x_and_y(head["x"] + 1, head["y"])
+                    self.restart = True
+                    return
 
+                square_to_add = self.__get_square_by_x_and_y(head["x"] + 1, head["y"])
                 self.__set_square_as_snake(square_to_add)
             case Direction.LEFT:
                 if head["x"] <= 0:
-                    square_to_add = self.__get_square_by_x_and_y(self.game_grid_size - 1, head["y"])
-                else:
-                    square_to_add = self.__get_square_by_x_and_y(head["x"] - 1, head["y"])
+                    self.restart = True
+                    return
 
+                square_to_add = self.__get_square_by_x_and_y(head["x"] - 1, head["y"])
                 self.__set_square_as_snake(square_to_add)
 
     def __generate_apple(self):
@@ -203,3 +212,36 @@ class Game:
     def __create_apples(self):
         for i in range(self.game_apple_start_count):
             self.__generate_apple()
+
+    def __finish_print(self):
+        print(">>> Game finished!")
+        print("Stats:")
+        print(f"Snake's length: {len(self.snake_tiles) + 1}")
+        print(f"Total collected apples: {len(self.snake_tiles) + 1 - self.game_snake_start_length}")
+
+    def __reset_snake_direction(self):
+        self.snake_direction = Direction.RIGHT
+        if self.game_snake_start_length % self.game_grid_size == 0:
+            self.snake_direction = Direction.DOWN
+
+    def __restart_game(self):
+        self.__finish_print()
+
+        for snake_tile in self.snake_tiles[:]:
+            square = self.__get_square_by_x_and_y(snake_tile["x"], snake_tile["y"])
+            self.__unset_square_as_snake(square)
+
+        for apple_tile in self.apple_tiles[:]:
+            square = self.__get_square_by_x_and_y(apple_tile["x"], apple_tile["y"])
+            self.__unset_square_as_apple(square, self.game_background_color, False)
+
+        self.__reset_snake_direction()
+        self.__start_game(first_time=False)
+        self.restart = False
+
+    def __start_game(self, first_time: bool = True):
+        if first_time:
+            self.__create_board()
+
+        self.__create_snake()
+        self.__create_apples()

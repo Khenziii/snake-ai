@@ -5,7 +5,7 @@ gameConfig: GameConfig = {
     "window_title": "Snake Game",
     "game_speed": 10,
     "game_grid_size": 50,
-    "game_snake_start_length": 1,
+    "game_snake_start_length": 100,
     "game_apple_start_count": 5,
     "game_snake_color": (255, 255, 255),
     "game_apple_color": (255, 0, 0),

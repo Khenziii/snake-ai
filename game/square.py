@@ -24,6 +24,7 @@ class Square:
 
     def change_color(self, color: Tuple[int, int, int]):
         self.color = color
+        self.rerender()
 
     def rerender(self):
         pygame.draw.rect(self.display, self.color, (self.location_x, self.location_y, self.size, self.size))
