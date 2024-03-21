@@ -48,7 +48,7 @@ class Game:
         self.running = True
         while self.running:
             if self.restart:
-                self.__restart_game()
+                self._restart_game()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -227,7 +227,7 @@ class Game:
         for i in range(self.game_apple_start_count):
             self.__generate_apple()
 
-    def __finish_print(self):
+    def __finish(self):
         print(">>> Game finished!")
         print("Stats:")
         print(f"Snake's length: {len(self.snake_tiles) + 1}")
@@ -238,8 +238,8 @@ class Game:
         if self.game_snake_start_length % self.game_grid_size == 0:
             self.snake_direction = Direction.DOWN
 
-    def __restart_game(self):
-        self.__finish_print()
+    def _restart_game(self):
+        self.__finish()
 
         for snake_tile in self.snake_tiles[:]:
             square = self.__get_square_by_x_and_y(snake_tile["x"], snake_tile["y"])
