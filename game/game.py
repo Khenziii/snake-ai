@@ -47,29 +47,32 @@ class Game:
 
         self.running = True
         while self.running:
-            if self.restart:
-                self._restart_game()
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
-                elif event.type == pygame.KEYDOWN:
-                    match event.unicode:
-                        case "w":
-                            self.snake_direction = Direction.UP
-                        case "s":
-                            self.snake_direction = Direction.DOWN
-                        case "a":
-                            self.snake_direction = Direction.LEFT
-                        case "d":
-                            self.snake_direction = Direction.RIGHT
-
-            self.__move_snake()
-            pygame.display.flip()  # .flip() updates the display
-            pygame.time.Clock().tick(self.game_speed)  # FPS cap
+            self.__play_move()
 
         pygame.display.quit()
         pygame.quit()
+
+    def __play_move(self):
+        if self.restart:
+            self._restart_game()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            elif event.type == pygame.KEYDOWN:
+                match event.unicode:
+                    case "w":
+                        self.snake_direction = Direction.UP
+                    case "s":
+                        self.snake_direction = Direction.DOWN
+                    case "a":
+                        self.snake_direction = Direction.LEFT
+                    case "d":
+                        self.snake_direction = Direction.RIGHT
+
+        self.__move_snake()
+        pygame.display.flip()  # .flip() updates the display
+        pygame.time.Clock().tick(self.game_speed)  # FPS cap
 
     def __create_board(self):
         size = int(self.window_size_px / self.game_grid_size)
