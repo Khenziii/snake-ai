@@ -10,5 +10,6 @@ gameConfig: GameConfig = {
     "game_snake_color": (255, 255, 255),
     "game_apple_color": (255, 0, 0),
     "game_background_color": (0, 0, 0),
+    "game_auto_handle_loop": True
 }
 game = Game(config=gameConfig)

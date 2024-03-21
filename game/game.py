@@ -15,6 +15,7 @@ class GameConfig(TypedDict):
     game_snake_color: SquareColor
     game_apple_color: SquareColor
     game_background_color: SquareColor
+    game_auto_handle_loop: bool
 
 
 class Game:
@@ -28,12 +29,14 @@ class Game:
         self.game_snake_color = config["game_snake_color"]
         self.game_apple_color = config["game_apple_color"]
         self.game_background_color = config["game_background_color"]
+        self.auto_handle_loop = config["game_auto_handle_loop"]
 
         self.tiles: List[SquaresType] = []
         self.snake_tiles: List[Position] = []
         self.snake_direction: Direction = Direction.RIGHT
         self.apple_tiles: List[Position] = []
         self.restart = False
+        self.running = False
 
         self.__run()
 
@@ -45,14 +48,17 @@ class Game:
 
         self.__start_game()
 
+        if not self.auto_handle_loop:
+            return
+
         self.running = True
         while self.running:
-            self.__play_move()
+            self.play_move()
 
         pygame.display.quit()
         pygame.quit()
 
-    def __play_move(self):
+    def play_move(self):
         if self.restart:
             self._restart_game()
 
