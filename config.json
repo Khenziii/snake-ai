@@ -1,0 +1,15 @@
+{
+    "window": {
+        "size_px": 1000,
+        "title": "Snake Game"
+    },
+    "game": {
+        "speed": 1000,
+        "grid_size": 10,
+        "snake_start_length": 3,
+        "apple_start_count": 2,
+        "snake_color": "(255, 255, 255)",
+        "apple_color": "(255, 0, 0)",
+        "background_color": "(0, 0, 0)"
+    }
+}
