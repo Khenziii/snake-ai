@@ -37,6 +37,7 @@ class Game:
         self.apple_tiles: List[Position] = []
         self.restart = False
         self.running = False
+        self.collected_apple = False
 
         self.__run()
 
@@ -76,6 +77,7 @@ class Game:
                     case "d":
                         self.snake_direction = Direction.RIGHT
 
+        self.collected_apple = False
         self.__move_snake()
         pygame.display.flip()  # .flip() updates the display
         pygame.time.Clock().tick(self.game_speed)  # FPS cap
@@ -149,6 +151,8 @@ class Game:
 
         if generate_new_apple:
             self.__generate_apple()
+
+        self.collected_apple = True
 
     def __get_square_by_x_and_y(self, x: int, y: int) -> SquaresType:
         results = [d for d in self.tiles if d.get("x") == x and d.get("y") == y]
