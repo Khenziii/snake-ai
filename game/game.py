@@ -15,6 +15,8 @@ class GameConfig(TypedDict):
     game_snake_color: SquareColor
     game_apple_color: SquareColor
     game_background_color: SquareColor
+    game_auto_handle_loop: bool
+    game_finish_print: bool
 
 
 class Game:
@@ -28,12 +30,16 @@ class Game:
         self.game_snake_color = config["game_snake_color"]
         self.game_apple_color = config["game_apple_color"]
         self.game_background_color = config["game_background_color"]
+        self.auto_handle_loop = config["game_auto_handle_loop"]
+        self.game_finish_print = config["game_finish_print"]
 
         self.tiles: List[SquaresType] = []
         self.snake_tiles: List[Position] = []
         self.snake_direction: Direction = Direction.RIGHT
         self.apple_tiles: List[Position] = []
         self.restart = False
+        self.running = False
+        self.collected_apple = False
 
         self.__run()
 
@@ -45,31 +51,38 @@ class Game:
 
         self.__start_game()
 
+        if not self.auto_handle_loop:
+            return
+
         self.running = True
         while self.running:
-            if self.restart:
-                self.__restart_game()
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
-                elif event.type == pygame.KEYDOWN:
-                    match event.unicode:
-                        case "w":
-                            self.snake_direction = Direction.UP
-                        case "s":
-                            self.snake_direction = Direction.DOWN
-                        case "a":
-                            self.snake_direction = Direction.LEFT
-                        case "d":
-                            self.snake_direction = Direction.RIGHT
-
-            self.__move_snake()
-            pygame.display.flip()  # .flip() updates the display
-            pygame.time.Clock().tick(self.game_speed)  # FPS cap
+            self.play_move()
 
         pygame.display.quit()
         pygame.quit()
+
+    def play_move(self):
+        if self.restart:
+            self._restart_game()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            elif event.type == pygame.KEYDOWN:
+                match event.unicode:
+                    case "w":
+                        self.snake_direction = Direction.UP
+                    case "s":
+                        self.snake_direction = Direction.DOWN
+                    case "a":
+                        self.snake_direction = Direction.LEFT
+                    case "d":
+                        self.snake_direction = Direction.RIGHT
+
+        self.collected_apple = False
+        self.__move_snake()
+        pygame.display.flip()  # .flip() updates the display
+        pygame.time.Clock().tick(self.game_speed)  # FPS cap
 
     def __create_board(self):
         size = int(self.window_size_px / self.game_grid_size)
@@ -141,6 +154,8 @@ class Game:
         if generate_new_apple:
             self.__generate_apple()
 
+        self.collected_apple = True
+
     def __get_square_by_x_and_y(self, x: int, y: int) -> SquaresType:
         results = [d for d in self.tiles if d.get("x") == x and d.get("y") == y]
         if len(results) == 0:
@@ -177,8 +192,6 @@ class Game:
         if not eaten_an_apple:
             self.__unset_square_as_snake(square_to_remove)
 
-        # !!!IMPORTANT!!!
-        # The Y axis is reversed for some reason, this is going to be looked into soon
         match self.snake_direction:
             case Direction.UP:
                 if head["y"] <= 0:
@@ -211,7 +224,10 @@ class Game:
         self.__set_square_as_snake(square_to_add)
 
     def __generate_apple(self):
-        random_index = randint(0, len(self.tiles))
+        if len(self.snake_tiles) + len(self.apple_tiles) == self.game_grid_size ** 2:
+            return
+
+        random_index = randint(0, len(self.tiles) - 1)
 
         # check, if the tile is a snake or an apple
         square = self.tiles[random_index]
@@ -224,19 +240,20 @@ class Game:
         for i in range(self.game_apple_start_count):
             self.__generate_apple()
 
-    def __finish_print(self):
-        print(">>> Game finished!")
-        print("Stats:")
-        print(f"Snake's length: {len(self.snake_tiles) + 1}")
-        print(f"Total collected apples: {len(self.snake_tiles) + 1 - self.game_snake_start_length}")
+    def __finish(self):
+        if self.game_finish_print:
+            print(">>> Game finished!")
+            print("Stats:")
+            print(f"Snake's length: {len(self.snake_tiles) + 1}")
+            print(f"Total collected apples: {len(self.snake_tiles) + 1 - self.game_snake_start_length}")
 
     def __reset_snake_direction(self):
         self.snake_direction = Direction.RIGHT
         if self.game_snake_start_length % self.game_grid_size == 0:
             self.snake_direction = Direction.DOWN
 
-    def __restart_game(self):
-        self.__finish_print()
+    def _restart_game(self):
+        self.__finish()
 
         for snake_tile in self.snake_tiles[:]:
             square = self.__get_square_by_x_and_y(snake_tile["x"], snake_tile["y"])
