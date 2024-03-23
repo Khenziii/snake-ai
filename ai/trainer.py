@@ -1,7 +1,7 @@
 from typing import TypedDict
 from ai.model import Net
 from collections import deque
-from torch import nn, optim, cat
+from torch import nn, optim, tensor, int64, stack
 from random import sample
 
 
@@ -32,22 +32,24 @@ class Trainer:
 
     def train(self):
         if len(self.memory) < self.batch_size:
+            print("not training!")
             return
 
         batch = sample(self.memory, self.batch_size)
-        states, actions, rewards, next_states, dones = zip(*batch)
+        states, actions, rewards, new_states, dones = zip(*batch)
 
-        states = cat(states)
-        actions = cat(actions)
-        rewards = cat(rewards)
-        next_states = cat(next_states)
-        dones = cat(dones)
+        states = stack(states)
+        actions = tensor(actions, dtype=int64)
+        rewards = tensor(rewards, dtype=int64)
+        new_states = stack(new_states)
+        dones = tensor(dones, dtype=int64)
 
-        current_q = self.model(states).gather(1, actions.unsqueeze(1)).squeeze()
-        next_q = self.model(next_states).max(1)[0]
-        target_q = rewards + (1 - dones) * self.gamma * next_q
+        q_values = self.model(states)
 
-        loss = self.criterion(current_q, target_q.detach())
+        next_q_values = self.model(new_states).max(1)[0]
+        target_q_values = rewards + (1 - dones) * self.gamma * next_q_values
+
+        loss = nn.functional.mse_loss(q_values.gather(1, actions.unsqueeze(1)), target_q_values.unsqueeze(1))
 
         self.optimizer.zero_grad()
         loss.backward()

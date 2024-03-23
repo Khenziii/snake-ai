@@ -18,13 +18,12 @@ class Agent:
         self.epsilon = None
 
     def get_state(self):
-        current_tiles, reward, is_game_over = self.env.get_state()
+        current_tiles, _, _ = self.env.get_state()
         current_state_tensor = flatten_game_state(current_tiles)
 
-        return current_state_tensor, is_game_over
+        return current_state_tensor
 
-    def get_action(self) -> int:
-        state, _ = self.get_state()
+    def get_action(self, state) -> int:
         moves = self.model(state)
 
         # exploring vs. exploiting

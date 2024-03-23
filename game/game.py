@@ -16,6 +16,7 @@ class GameConfig(TypedDict):
     game_apple_color: SquareColor
     game_background_color: SquareColor
     game_auto_handle_loop: bool
+    game_finish_print: bool
 
 
 class Game:
@@ -30,6 +31,7 @@ class Game:
         self.game_apple_color = config["game_apple_color"]
         self.game_background_color = config["game_background_color"]
         self.auto_handle_loop = config["game_auto_handle_loop"]
+        self.game_finish_print = config["game_finish_print"]
 
         self.tiles: List[SquaresType] = []
         self.snake_tiles: List[Position] = []
@@ -190,8 +192,6 @@ class Game:
         if not eaten_an_apple:
             self.__unset_square_as_snake(square_to_remove)
 
-        # !!!IMPORTANT!!!
-        # The Y axis is reversed for some reason, this is going to be looked into soon
         match self.snake_direction:
             case Direction.UP:
                 if head["y"] <= 0:
@@ -241,10 +241,11 @@ class Game:
             self.__generate_apple()
 
     def __finish(self):
-        print(">>> Game finished!")
-        print("Stats:")
-        print(f"Snake's length: {len(self.snake_tiles) + 1}")
-        print(f"Total collected apples: {len(self.snake_tiles) + 1 - self.game_snake_start_length}")
+        if self.game_finish_print:
+            print(">>> Game finished!")
+            print("Stats:")
+            print(f"Snake's length: {len(self.snake_tiles) + 1}")
+            print(f"Total collected apples: {len(self.snake_tiles) + 1 - self.game_snake_start_length}")
 
     def __reset_snake_direction(self):
         self.snake_direction = Direction.RIGHT

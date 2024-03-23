@@ -25,8 +25,11 @@ class AIGame(Game):
         return self.tiles, reward, self.restart
 
     def handle_action(self, action: int):
-        possible_directions = [Direction.UP, Direction.DOWN, Direction.RIGHT, Direction.LEFT]
+        possible_directions = list(Direction)
         self.snake_direction = possible_directions[action]
 
-        _, reward, _ = self.play_move()
-        return reward
+        _, reward, is_game_over = self.play_move()
+        return reward, is_game_over
+
+    def get_score(self):
+        return len(self.snake_tiles) + 1 - self.game_snake_start_length
