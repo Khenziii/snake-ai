@@ -13,15 +13,20 @@ class AIGame(Game):
 
     def play_move(self):
         super().play_move()
+        return self.get_state()
 
+    def get_state(self):
         reward = 0
         if self.restart:
             reward = -100
         if self.collected_apple:
             reward = 10
 
-        return self.tiles, reward
+        return self.tiles, reward, self.restart
 
     def handle_action(self, action: int):
         possible_directions = [Direction.UP, Direction.DOWN, Direction.RIGHT, Direction.LEFT]
         self.snake_direction = possible_directions[action]
+
+        _, reward, _ = self.play_move()
+        return reward

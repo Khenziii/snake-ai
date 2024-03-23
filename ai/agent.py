@@ -18,18 +18,18 @@ class Agent:
         self.epsilon = None
 
     def get_state(self):
-        current_tiles, reward = self.env.play_move()
+        current_tiles, reward, is_game_over = self.env.get_state()
         current_state_tensor = flatten_game_state(current_tiles)
 
-        return current_state_tensor
+        return current_state_tensor, is_game_over
 
     def get_action(self) -> int:
-        state = self.get_state()
+        state, _ = self.get_state()
         moves = self.model(state)
 
         # exploring vs. exploiting
         # TODO: work on this condition:
-        if randint(0, 150) > self.env.current_generation:
+        if randint(0, 30) > self.env.current_generation:
             # random move
             random_index = randint(0, len(moves) - 1)
             moves[random_index] = 1
