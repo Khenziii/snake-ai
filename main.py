@@ -20,7 +20,7 @@ from ai.trainer import TrainerConfig, Trainer
 gameConfig: GameConfig = {
     "window_size_px": 1000,
     "window_title": "Snake Game",
-    "game_speed": 200,
+    "game_speed": 1_000,
     "game_grid_size": 10,
     "game_snake_start_length": 3,
     "game_apple_start_count": 2,
@@ -54,6 +54,7 @@ trainerConfig: TrainerConfig = {
 trainer = Trainer(config=trainerConfig)
 
 scores = []
+rewards = []
 
 # Training loop
 for epoch in range(1_000_000_000):  # Number of epochs
@@ -66,6 +67,9 @@ for epoch in range(1_000_000_000):  # Number of epochs
 
     score = env.get_score()
     scores.append(score)
+    rewards.append(reward)
     if epoch % 100 == 0:
         print(f"score: {score}")
         print(f"average score: {sum(scores) / len(scores)}")
+        print(f"reward: {reward}")
+        print(f"average reward: {sum(rewards) / len(rewards)}")
