@@ -1,4 +1,4 @@
-from typing import TypedDict, List, Any
+from typing import TypedDict, List, Any, Callable
 
 
 class CommandConfig(TypedDict):
@@ -11,6 +11,7 @@ class CommandConfig(TypedDict):
 
 class Context(TypedDict):
     other_commands: List[CommandConfig]
+    exit_function: Callable[[], None]
 
 
 class Command:

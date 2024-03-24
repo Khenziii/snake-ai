@@ -22,6 +22,9 @@ class Cli:
 
         self.__handle_input()
 
+    def __exit(self):
+        self.running = False
+
     def __set_context(self):
         formatted_commands: List[dict[str, Any]] = []
         for command in self.commands:
@@ -32,7 +35,8 @@ class Cli:
             })
 
         self.context: Context = {
-            "other_commands": formatted_commands
+            "other_commands": formatted_commands,
+            "exit_function": self.__exit
         }
 
     def __get_command_by_name(self, command_name: str) -> Command | None:
