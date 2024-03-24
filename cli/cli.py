@@ -45,8 +45,10 @@ class Cli:
     def __handle_input(self):
         while self.running:
             command_name = input("> ")
-            command = self.__get_command_by_name(command_name)
+            if command_name.strip() == "":
+                continue
 
+            command = self.__get_command_by_name(command_name)
             if command is None:
                 print(f"{command_name}: command not found!")
             else:
