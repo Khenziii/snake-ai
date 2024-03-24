@@ -1,7 +1,6 @@
-from ai.ai_game import GameConfig, AIGame
-from ai.model import NetConfig, Net
-from ai.agent import AgentConfig, Agent
-from ai.trainer import TrainerConfig, Trainer
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "true"
+
 from config.config import ConfigConfig, Config
 from cli.cli import CliConfig, Cli
 from cli.command_list import command_list
