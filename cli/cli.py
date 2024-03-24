@@ -1,6 +1,6 @@
 from typing import TypedDict, List, Any
 from colorama import Fore, Style
-from cli.command import Command, CommandConfig, Context
+from cli.command import Command, Context
 
 
 class CliConfig(TypedDict):

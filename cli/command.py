@@ -22,4 +22,8 @@ class Command:
         self.context_required = config["context_required"]
 
     def __call__(self, context: Context | None):
-        pass
+        if context is None and self.context_required:
+            print(f"ERROR: Context is required for {self.name} command!")
+            return True
+
+        return False
