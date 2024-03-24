@@ -1,5 +1,6 @@
-from typing import TypedDict, List, Any, Literal
+from typing import TypedDict, List, Any
 from colorama import Fore, Style
+from threading import Thread
 from cli.command import Command, Context
 from config.config import Config
 from game.game import GameConfig, Game
@@ -18,7 +19,7 @@ class Cli:
         self.commands = config["commands"]
         self.config_manager = config["config_manager"]
         self.running = True
-        self.game = None
+        self.game_spawned = False
 
         self.context: Context
         self.__set_context()
@@ -28,10 +29,14 @@ class Cli:
 
         self.__handle_input()
 
+    def __spawn_game(self, config: GameConfig):
+        _ = Game(config)
+
     def __start_game(self, human_or_ai: str):
-        if self.game is not None:
-            print("A instance of game is already running!")
+        if self.game_spawned:
+            print("An instance of game is already running!")
             print("Use the `stop` command to stop it.")
+            return
 
         if human_or_ai not in ["human", "ai"]:
             print("ERROR: passed invalid string to Cli.__start_game()")
@@ -43,7 +48,8 @@ class Cli:
                 game_auto_handle_loop=True,
                 game_finish_print=True
             )
-            self.game = Game(config)
+            game_thread = Thread(target=self.__spawn_game, args=(config, ))
+            game_thread.start()
         else:
             # config: GameConfig = self.config_manager.get_game_config(
             #     game_auto_handle_loop=False,
@@ -51,13 +57,18 @@ class Cli:
             # )
             # self.game = AIGame(config)
             print("This argument is going to get implemented later!")
-            return
+
+        self.game_spawned = True
 
     def __stop_game(self):
-        self.game.running = False
-        self.game = None
+        # TODO: kill the thread here
+
+        self.game_spawned = False
 
     def __exit(self):
+        if self.game_spawned:
+            self.__stop_game()
+
         self.running = False
 
     def __set_context(self):

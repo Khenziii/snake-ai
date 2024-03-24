@@ -241,11 +241,7 @@ class Game:
             self.__generate_apple()
 
     def __finish(self):
-        if self.game_finish_print:
-            print(">>> Game finished!")
-            print("Stats:")
-            print(f"Snake's length: {len(self.snake_tiles) + 1}")
-            print(f"Total collected apples: {len(self.snake_tiles) + 1 - self.game_snake_start_length}")
+        pass
 
     def __reset_snake_direction(self):
         self.snake_direction = Direction.RIGHT
