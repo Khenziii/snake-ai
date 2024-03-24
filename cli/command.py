@@ -12,6 +12,8 @@ class CommandConfig(TypedDict):
 class Context(TypedDict):
     other_commands: List[CommandConfig]
     exit_function: Callable[[], None]
+    start_game_function: Callable[[str], None]
+    stop_game_function: Callable[[], None]
 
 
 class Command:

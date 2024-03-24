@@ -69,5 +69,6 @@ configManager = Config(configConfig)
 cliConfig: CliConfig = {
     "display_init_message": True,
     "commands": command_list,
+    "config_manager": configManager,
 }
 cli = Cli(config=cliConfig)
