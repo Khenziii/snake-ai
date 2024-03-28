@@ -19,7 +19,7 @@ class Cli:
         self.commands = config["commands"]
         self.config_manager = config["config_manager"]
         self.running = True
-        self.game_spawned = False
+        self.game: Game | AIGame | None = None
 
         self.context: Context
         self.__set_context()
@@ -29,11 +29,8 @@ class Cli:
 
         self.__handle_input()
 
-    def __spawn_game(self, config: GameConfig):
-        _ = Game(config)
-
     def __start_game(self, human_or_ai: str):
-        if self.game_spawned:
+        if self.game is not None:
             print("An instance of game is already running!")
             print("Use the `stop` command to stop it.")
             return
@@ -46,10 +43,10 @@ class Cli:
         if human:
             config: GameConfig = self.config_manager.get_game_config(
                 game_auto_handle_loop=True,
-                game_finish_print=True
+                game_finish_print=False,
+                game_auto_run=False
             )
-            game_thread = Thread(target=self.__spawn_game, args=(config, ))
-            game_thread.start()
+            self.game = Game(config)
         else:
             # config: GameConfig = self.config_manager.get_game_config(
             #     game_auto_handle_loop=False,
@@ -57,16 +54,22 @@ class Cli:
             # )
             # self.game = AIGame(config)
             print("This argument is going to get implemented later!")
+            return
 
-        self.game_spawned = True
+        game_thread = Thread(target=self.game.run)
+        game_thread.start()
 
     def __stop_game(self):
-        # TODO: kill the thread here
+        if self.game is None:
+            print("No games are currently running!")
+            print("Use the `start` command to start one.")
+            return
 
-        self.game_spawned = False
+        self.game.running = False
+        self.game = None
 
     def __exit(self):
-        if self.game_spawned:
+        if self.game is not None:
             self.__stop_game()
 
         self.running = False

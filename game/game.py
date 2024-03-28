@@ -17,6 +17,7 @@ class GameConfig(TypedDict):
     game_background_color: SquareColor
     game_auto_handle_loop: bool
     game_finish_print: bool
+    game_auto_run: bool
 
 
 class Game:
@@ -32,6 +33,7 @@ class Game:
         self.game_background_color = config["game_background_color"]
         self.auto_handle_loop = config["game_auto_handle_loop"]
         self.game_finish_print = config["game_finish_print"]
+        self.game_auto_run = config["game_auto_run"]
 
         self.tiles: List[SquaresType] = []
         self.snake_tiles: List[Position] = []
@@ -40,10 +42,12 @@ class Game:
         self.restart = False
         self.running = False
         self.collected_apple = False
+        self.display = None
 
-        self.__run()
+        if self.game_auto_run:
+            self.run()
 
-    def __run(self):
+    def run(self):
         pygame.init()
 
         self.display = pygame.display.set_mode((self.window_size_px, self.window_size_px))

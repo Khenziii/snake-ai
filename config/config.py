@@ -38,7 +38,7 @@ class Config:
         with open(self.config_file_path, 'w') as file:
             file.write(json_string)
 
-    def get_game_config(self, game_auto_handle_loop: bool, game_finish_print: bool) -> GameConfig:
+    def get_game_config(self, game_auto_handle_loop: bool, game_finish_print: bool, game_auto_run: bool) -> GameConfig:
         return {
             "window_size_px": self.config["window"]["size_px"],
             "window_title": self.config["window"]["title"],
@@ -51,6 +51,7 @@ class Config:
             "game_background_color": self.config["game"]["background_color"],
             "game_finish_print": game_finish_print,
             "game_auto_handle_loop": game_auto_handle_loop,
+            "game_auto_run": game_auto_run,
         }
 
     def get_net_config(self) -> NetConfig:

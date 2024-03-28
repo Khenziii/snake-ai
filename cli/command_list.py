@@ -1,6 +1,6 @@
 from typing import List
 from cli.command import Command
-from cli.commands import help, exit, clear, start
+from cli.commands import help, exit, clear, start, stop
 
 
 command_list: List[Command] = [
@@ -30,6 +30,13 @@ command_list: List[Command] = [
         "description": "Starts the game",
         "args": ["human"],
         "args_description": "First argument should be set to either `human` or `ai`",
+        "context_required": True,
+    }),
+    stop.StopCommand({
+        "name": "stop",
+        "description": "Stops the game",
+        "args": [],
+        "args_description": None,
         "context_required": True,
     })
 ]
