@@ -1,6 +1,7 @@
 from typing import TypedDict, List, Any
 from colorama import Fore, Style
 from threading import Thread
+from copy import deepcopy
 from cli.command import Command, Context
 from config.config import Config
 from game.game import GameConfig, Game
@@ -118,11 +119,14 @@ class Cli:
             if command is None:
                 print(f"{command_name}: command not found!")
             else:
+                # We need to create a copy of command, to
+                # not override default args permanently
+                command_copy = deepcopy(command)
                 if len(entered_command.split()) > 1:
-                    command.args = entered_command.split()[1:]
+                    command_copy.args = entered_command.split()[1:]
 
                 context = None
-                if command.context_required:
+                if command_copy.context_required:
                     context = self.context
 
-                command(context)
+                command_copy(context)
