@@ -10,6 +10,7 @@ from cli.commands import (
     color,
     pause,
     unpause,
+    apple,
 )
 
 
@@ -77,6 +78,13 @@ command_list: List[Command] = [
         "description": "Unpauses the game",
         "args": [],
         "args_description": None,
+        "context_required": True,
+    }),
+    apple.AppleCommand({
+        "name": "apple",
+        "description": "Sets the amount of apples that are present at once.",
+        "args": [],
+        "args_description": "First argument needs to be a valid int.",
         "context_required": True,
     })
 ]

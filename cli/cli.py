@@ -134,6 +134,13 @@ class Cli:
 
         self.game.paused = False
 
+    def __set_apple_count(self, count: int):
+        config = self.config_manager.config
+        config["game"]["apple_start_count"] = count
+        self.config_manager.change_config(config)
+
+        print("Success! Restart the game, to apply changes.")
+
     def __set_context(self):
         formatted_commands: List[dict[str, Any]] = []
         for command in self.commands:
@@ -152,6 +159,7 @@ class Cli:
             "set_game_color_function": self.__set_game_color,
             "pause_game_function": self.__pause_game,
             "unpause_game_function": self.__unpause_game,
+            "set_game_apple_count_function": self.__set_apple_count,
         }
 
     def __get_command_by_name(self, command_name: str) -> Command | None:
