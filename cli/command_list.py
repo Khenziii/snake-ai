@@ -41,7 +41,7 @@ command_list: List[Command] = [
         "name": "start",
         "description": "Starts the game",
         "args": ["human"],
-        "args_description": "First argument should be set to either `human` or `ai`",
+        "args_description": "First argument should be set to either `human` or `ai`. Default: `human`.",
         "context_required": True,
     }),
     stop.StopCommand({

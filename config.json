@@ -4,11 +4,11 @@
         "title": "Snake Game"
     },
     "game": {
-        "speed": 5,
+        "speed": 1000,
         "grid_size": 10,
         "snake_start_length": 3,
         "apple_start_count": 2,
-        "snake_color": "#ffffff",
+        "snake_color": "#000000",
         "apple_color": "#ff0000",
         "background_color": "#000000"
     },

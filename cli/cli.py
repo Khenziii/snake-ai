@@ -6,7 +6,7 @@ from cli.command import Command, Context
 from config.config import Config
 from game.game import GameConfig, Game
 from game.square import SquareColor
-from ai.ai_game import AIGame
+from ai.wrapper import WrapperConfig, Wrapper
 
 
 class CliConfig(TypedDict):
@@ -21,7 +21,7 @@ class Cli:
         self.commands = config["commands"]
         self.config_manager = config["config_manager"]
         self.running = True
-        self.game: Game | AIGame | None = None
+        self.game: Game | Wrapper | None = None
 
         self.context: Context
         self.__set_context()
@@ -50,13 +50,11 @@ class Cli:
             )
             self.game = Game(config)
         else:
-            # config: GameConfig = self.config_manager.get_game_config(
-            #     game_auto_handle_loop=False,
-            #     game_finish_print=True
-            # )
-            # self.game = AIGame(config)
-            print("This argument is going to get implemented later!")
-            return
+            config: WrapperConfig = self.config_manager.get_wrapper_config(
+                auto_run=False,
+                finish_print=False
+            )
+            self.game = Wrapper(config)
 
         game_thread = Thread(target=self.game.run)
         game_thread.start()
