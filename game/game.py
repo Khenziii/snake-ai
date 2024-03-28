@@ -56,15 +56,14 @@ class Game:
 
         self.__start_game()
 
+        self.running = True
         if not self.auto_handle_loop:
             return
 
-        self.running = True
         while self.running:
             self.play_move()
 
-        pygame.display.quit()
-        pygame.quit()
+        self.exit()
 
     def play_move(self):
         if self.paused:
@@ -103,6 +102,11 @@ class Game:
                 continue
 
             tile["square"].change_color(self.game_background_color)
+
+    def exit(self):
+        self.running = False
+        pygame.display.quit()
+        pygame.quit()
 
     def __create_board(self):
         size = int(self.window_size_px / self.game_grid_size)

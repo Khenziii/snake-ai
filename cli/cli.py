@@ -7,6 +7,7 @@ from config.config import Config
 from game.game import GameConfig, Game
 from game.square import SquareColor
 from ai.wrapper import WrapperConfig, Wrapper
+from ai.ai_game import AIGame
 
 
 class CliConfig(TypedDict):
@@ -21,7 +22,8 @@ class Cli:
         self.commands = config["commands"]
         self.config_manager = config["config_manager"]
         self.running = True
-        self.game: Game | Wrapper | None = None
+        self.game: Game | AIGame | None = None
+        self.wrapper: Wrapper | None = None
 
         self.context: Context
         self.__set_context()
@@ -49,14 +51,18 @@ class Cli:
                 game_auto_run=False
             )
             self.game = Game(config)
+
+            game_thread = Thread(target=self.game.run)
         else:
             config: WrapperConfig = self.config_manager.get_wrapper_config(
                 auto_run=False,
                 finish_print=False
             )
-            self.game = Wrapper(config)
+            self.wrapper = Wrapper(config)
+            self.game = self.wrapper.env
 
-        game_thread = Thread(target=self.game.run)
+            game_thread = Thread(target=self.wrapper.run)
+
         game_thread.start()
 
     def __stop_game(self):
@@ -65,8 +71,14 @@ class Cli:
             print("Use the `start` command to start one.")
             return
 
-        self.game.running = False
+        if isinstance(self.wrapper, Wrapper):
+            self.wrapper.env.exit()
+            self.wrapper.running = False
+        else:
+            self.game.exit()
+
         self.game = None
+        self.wrapper = None
 
     def __exit(self):
         if self.game is not None:
