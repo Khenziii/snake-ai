@@ -139,7 +139,20 @@ class Cli:
         config["game"]["apple_start_count"] = count
         self.config_manager.change_config(config)
 
-        print("Success! Restart the game, to apply changes.")
+        if self.game is None:
+            print("Success!")
+        else:
+            print("Success! Restart the game, to apply changes.")
+
+    def __set_grid_size(self, size: int):
+        config = self.config_manager.config
+        config["game"]["grid_size"] = size
+        self.config_manager.change_config(config)
+
+        if self.game is None:
+            print("Success!")
+        else:
+            print("Success! Restart the game, to apply changes.")
 
     def __set_context(self):
         formatted_commands: List[dict[str, Any]] = []
@@ -160,6 +173,7 @@ class Cli:
             "pause_game_function": self.__pause_game,
             "unpause_game_function": self.__unpause_game,
             "set_game_apple_count_function": self.__set_apple_count,
+            "set_game_grid_size_function": self.__set_grid_size,
         }
 
     def __get_command_by_name(self, command_name: str) -> Command | None:

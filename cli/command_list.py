@@ -11,8 +11,8 @@ from cli.commands import (
     pause,
     unpause,
     apple,
+    grid_size,
 )
-
 
 command_list: List[Command] = [
     help.HelpCommand({
@@ -82,9 +82,16 @@ command_list: List[Command] = [
     }),
     apple.AppleCommand({
         "name": "apple",
-        "description": "Sets the amount of apples that are present at once.",
+        "description": "Sets the amount of apples that are present at once",
         "args": [],
         "args_description": "First argument needs to be a valid int.",
         "context_required": True,
-    })
+    }),
+    grid_size.GridSizeCommand({
+        "name": "grid_size",
+        "description": "Sets the size of game's grid",
+        "args": [],
+        "args_description": "First argument needs to be a valid int.",
+        "context_required": True,
+    }),
 ]
