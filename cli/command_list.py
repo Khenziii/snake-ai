@@ -43,8 +43,8 @@ command_list: List[Command] = [
     speed.SpeedCommand({
         "name": "speed",
         "description": "Sets game's FPS (more -> snake moves faster)",
-        "args": [10],
-        "args_description": "First argument should be a valid integer. Default: 10.",
+        "args": [5],
+        "args_description": "First argument should be a valid integer. Default: 5.",
         "context_required": True,
     })
 ]
