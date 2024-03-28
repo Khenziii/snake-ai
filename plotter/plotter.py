@@ -31,8 +31,8 @@ class Plotter:
         plt.title(self.title)
 
         self.animation = FuncAnimation(self.figure, self.__update, interval=1000)
-        thread = Thread(target=plt.show)
-        thread.start()
+        self.thread = Thread(target=plt.show)
+        self.thread.start()
 
     def append(self, x, y):
         self.x_data.append(x)
@@ -43,3 +43,6 @@ class Plotter:
         self.figure.gca().relim()
         self.figure.gca().autoscale_view()
         return self.figure,
+
+    def exit(self):
+        plt.close()

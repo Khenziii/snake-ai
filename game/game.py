@@ -113,6 +113,8 @@ class Game:
             tile["square"].change_color(self.game_background_color)
 
     def exit(self):
+        self.plotter.exit()
+
         self.running = False
         pygame.display.quit()
         pygame.quit()
