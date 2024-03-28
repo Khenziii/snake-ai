@@ -1,5 +1,6 @@
 from typing import TypedDict
 import json
+from copy import deepcopy
 from utils.hex_rgb_convert import hex_string_to_rgb_tuple, rgb_tuple_to_hex_string
 from game.game import GameConfig
 from ai.ai_game import AIGame
@@ -28,13 +29,13 @@ class Config:
         self.config["game"]["background_color"] = hex_string_to_rgb_tuple(self.config["game"]["background_color"])
 
     def change_config(self, new_config: dict):
-        self.config = new_config
+        self.config = deepcopy(new_config)
 
         new_config["game"]["snake_color"] = rgb_tuple_to_hex_string(new_config["game"]["snake_color"])
         new_config["game"]["apple_color"] = rgb_tuple_to_hex_string(new_config["game"]["apple_color"])
         new_config["game"]["background_color"] = rgb_tuple_to_hex_string(new_config["game"]["background_color"])
 
-        json_string = json.dumps(new_config, ident=4)
+        json_string = json.dumps(new_config, indent=4)
         with open(self.config_file_path, 'w') as file:
             file.write(json_string)
 

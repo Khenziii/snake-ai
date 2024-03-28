@@ -76,12 +76,12 @@ class Cli:
         self.running = False
 
     def __set_game_speed(self, speed: int):
-        if self.game is None:
-            print("No games are currently running!")
-            print("Use the `start` command to start one.")
-            return
+        if self.game is not None:
+            self.game.game_speed = speed
 
-        self.game.game_speed = speed
+        config = self.config_manager.config
+        config["game"]["speed"] = speed
+        self.config_manager.change_config(config)
 
     def __set_context(self):
         formatted_commands: List[dict[str, Any]] = []
