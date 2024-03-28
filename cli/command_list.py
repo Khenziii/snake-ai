@@ -7,8 +7,9 @@ command_list: List[Command] = [
     help.HelpCommand({
         "name": "help",
         "description": "Lists available commands",
-        "args": [],
-        "args_description": None,
+        "args": [None],
+        "args_description": "First argument should be set to either:\n- name of the command that you'd like to learn "
+                            "more about\n- nothing (in this case, the command will display a list of all commands)",
         "context_required": True,
     }),
     exit.ExitCommand({

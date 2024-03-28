@@ -15,7 +15,7 @@ class SpeedCommand(Command):
         try:
             args_zero_int = int(args_zero)
         except ValueError:
-            print("First argument must be a valid int! See `help` for more examples.")
+            print("First argument must be a valid int! See `help speed` for more examples.")
             return
 
         set_game_speed_func(args_zero_int)
