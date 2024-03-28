@@ -108,6 +108,7 @@ class Cli:
                 self.game.game_apple_color = color
             case "background":
                 self.game.game_background_color = color
+        self.game.rerender_board()
 
     def __set_context(self):
         formatted_commands: List[dict[str, Any]] = []

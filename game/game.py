@@ -88,6 +88,18 @@ class Game:
         pygame.display.flip()  # .flip() updates the display
         pygame.time.Clock().tick(self.game_speed)  # FPS cap
 
+    def rerender_board(self):
+        for tile in self.tiles:
+            if tile in self.snake_tiles:
+                tile["square"].change_color(self.game_snake_color)
+                continue
+
+            if tile in self.apple_tiles:
+                tile["square"].change_color(self.game_apple_color)
+                continue
+
+            tile["square"].change_color(self.game_background_color)
+
     def __create_board(self):
         size = int(self.window_size_px / self.game_grid_size)
 
