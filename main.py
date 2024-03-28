@@ -1,8 +1,9 @@
-from ai.ai_game import GameConfig, AIGame
-from ai.model import NetConfig, Net
-from ai.agent import AgentConfig, Agent
-from ai.trainer import TrainerConfig, Trainer
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "true"
+
 from config.config import ConfigConfig, Config
+from cli.cli import CliConfig, Cli
+from cli.command_list import command_list
 
 # gameConfig: GameConfig = {
 #     "window_size_px": 1000,
@@ -18,44 +19,56 @@ from config.config import ConfigConfig, Config
 # }
 # game = Game(config=gameConfig)
 
+# configConfig: ConfigConfig = {
+#     "config_file_path": "config.json",
+# }
+# configManager = Config(configConfig)
+# gameConfig: GameConfig = configManager.get_game_config(
+#     game_auto_handle_loop=False,
+#     game_finish_print=True
+# )
+# env = AIGame(config=gameConfig)
+# netConfig: NetConfig = configManager.get_net_config()
+# net = Net(config=netConfig)
+# agentConfig: AgentConfig = configManager.get_agent_config(
+#     model=net,
+#     env=env,
+# )
+# agent = Agent(config=agentConfig)
+# trainerConfig: TrainerConfig = configManager.get_trainer_config(
+#     model=net
+# )
+# trainer = Trainer(config=trainerConfig)
+#
+# scores = []
+# rewards = []
+#
+# # Training loop
+# for epoch in range(1_000_000_000):  # Number of epochs
+#     state = agent.get_state()
+#     action = agent.get_action(state)
+#     reward, is_game_over = env.handle_action(action)
+#     new_state = agent.get_state()
+#     trainer.remember(state, action, reward, new_state, is_game_over)
+#     trainer.train()
+#
+#     score = env.get_score()
+#     scores.append(score)
+#     rewards.append(reward)
+#     if epoch % 100 == 0:
+#         print(f"score: {score}")
+#         print(f"average score: {sum(scores) / len(scores)}")
+#         print(f"reward: {reward}")
+#         print(f"average reward: {sum(rewards) / len(rewards)}")
+
 configConfig: ConfigConfig = {
     "config_file_path": "config.json",
 }
 configManager = Config(configConfig)
-gameConfig: GameConfig = configManager.get_game_config(
-    game_auto_handle_loop=False,
-    game_finish_print=True
-)
-env = AIGame(config=gameConfig)
-netConfig: NetConfig = configManager.get_net_config()
-net = Net(config=netConfig)
-agentConfig: AgentConfig = configManager.get_agent_config(
-    model=net,
-    env=env,
-)
-agent = Agent(config=agentConfig)
-trainerConfig: TrainerConfig = configManager.get_trainer_config(
-    model=net
-)
-trainer = Trainer(config=trainerConfig)
 
-scores = []
-rewards = []
-
-# Training loop
-for epoch in range(1_000_000_000):  # Number of epochs
-    state = agent.get_state()
-    action = agent.get_action(state)
-    reward, is_game_over = env.handle_action(action)
-    new_state = agent.get_state()
-    trainer.remember(state, action, reward, new_state, is_game_over)
-    trainer.train()
-
-    score = env.get_score()
-    scores.append(score)
-    rewards.append(reward)
-    if epoch % 100 == 0:
-        print(f"score: {score}")
-        print(f"average score: {sum(scores) / len(scores)}")
-        print(f"reward: {reward}")
-        print(f"average reward: {sum(rewards) / len(rewards)}")
+cliConfig: CliConfig = {
+    "display_init_message": True,
+    "commands": command_list,
+    "config_manager": configManager,
+}
+cli = Cli(config=cliConfig)

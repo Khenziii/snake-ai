@@ -17,6 +17,7 @@ class GameConfig(TypedDict):
     game_background_color: SquareColor
     game_auto_handle_loop: bool
     game_finish_print: bool
+    game_auto_run: bool
 
 
 class Game:
@@ -32,6 +33,7 @@ class Game:
         self.game_background_color = config["game_background_color"]
         self.auto_handle_loop = config["game_auto_handle_loop"]
         self.game_finish_print = config["game_finish_print"]
+        self.game_auto_run = config["game_auto_run"]
 
         self.tiles: List[SquaresType] = []
         self.snake_tiles: List[Position] = []
@@ -40,10 +42,13 @@ class Game:
         self.restart = False
         self.running = False
         self.collected_apple = False
+        self.display = None
+        self.paused = False
 
-        self.__run()
+        if self.game_auto_run:
+            self.run()
 
-    def __run(self):
+    def run(self):
         pygame.init()
 
         self.display = pygame.display.set_mode((self.window_size_px, self.window_size_px))
@@ -62,6 +67,9 @@ class Game:
         pygame.quit()
 
     def play_move(self):
+        if self.paused:
+            return
+
         if self.restart:
             self._restart_game()
 
@@ -83,6 +91,18 @@ class Game:
         self.__move_snake()
         pygame.display.flip()  # .flip() updates the display
         pygame.time.Clock().tick(self.game_speed)  # FPS cap
+
+    def rerender_board(self):
+        for tile in self.tiles:
+            if tile in self.snake_tiles:
+                tile["square"].change_color(self.game_snake_color)
+                continue
+
+            if tile in self.apple_tiles:
+                tile["square"].change_color(self.game_apple_color)
+                continue
+
+            tile["square"].change_color(self.game_background_color)
 
     def __create_board(self):
         size = int(self.window_size_px / self.game_grid_size)
@@ -241,11 +261,7 @@ class Game:
             self.__generate_apple()
 
     def __finish(self):
-        if self.game_finish_print:
-            print(">>> Game finished!")
-            print("Stats:")
-            print(f"Snake's length: {len(self.snake_tiles) + 1}")
-            print(f"Total collected apples: {len(self.snake_tiles) + 1 - self.game_snake_start_length}")
+        pass
 
     def __reset_snake_direction(self):
         self.snake_direction = Direction.RIGHT
