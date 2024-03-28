@@ -5,11 +5,6 @@ from game.types import Direction
 class AIGame(Game):
     def __init__(self, config: GameConfig):
         super().__init__(config)
-        self.current_generation = 0
-
-    def _restart_game(self):
-        super()._restart_game()
-        self.current_generation += 1
 
     def play_move(self):
         super().play_move()
@@ -30,6 +25,3 @@ class AIGame(Game):
 
         _, reward, is_game_over = self.play_move()
         return reward, is_game_over
-
-    def get_score(self):
-        return len(self.snake_tiles) + 1 - self.game_snake_start_length

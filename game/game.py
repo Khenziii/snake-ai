@@ -1,8 +1,9 @@
 import pygame
 from typing import TypedDict, List
+from random import randint
+from plotter.plotter import Plotter
 from game.square import Square, SquareConfig, SquareColor
 from game.types import Direction, Position, SquaresType
-from random import randint
 
 
 class GameConfig(TypedDict):
@@ -44,6 +45,14 @@ class Game:
         self.collected_apple = False
         self.display = None
         self.paused = False
+        self.current_try = 1
+
+        dummy_plotter_config = {
+            "x_axis_label": "Retries",
+            "y_axis_label": "Scores",
+            "window_title": "Score Graph"
+        }
+        self.plotter = Plotter(dummy_plotter_config)
 
         if self.game_auto_run:
             self.run()
@@ -275,6 +284,9 @@ class Game:
     def _restart_game(self):
         self.__finish()
 
+        self.plotter.append(self.current_try, self.get_score())
+        self.current_try += 1
+
         for snake_tile in self.snake_tiles[:]:
             square = self.__get_square_by_x_and_y(snake_tile["x"], snake_tile["y"])
             self.__unset_square_as_snake(square)
@@ -293,3 +305,6 @@ class Game:
 
         self.__create_snake()
         self.__create_apples()
+
+    def get_score(self):
+        return len(self.snake_tiles) + 1 - self.game_snake_start_length

@@ -28,7 +28,8 @@ class Agent:
 
         # exploring vs. exploiting
         # TODO: work on this condition:
-        if randint(0, 30) > self.env.current_generation:
+        self.epsilon = 80 - self.env.current_try
+        if randint(0, 200) < self.epsilon:
             # random move
             random_index = randint(0, len(moves) - 1)
             moves[random_index] = 1
