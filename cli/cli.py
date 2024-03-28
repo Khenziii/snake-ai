@@ -5,6 +5,7 @@ from copy import deepcopy
 from cli.command import Command, Context
 from config.config import Config
 from game.game import GameConfig, Game
+from game.square import SquareColor
 from ai.ai_game import AIGame
 
 
@@ -83,6 +84,31 @@ class Cli:
         config["game"]["speed"] = speed
         self.config_manager.change_config(config)
 
+    def __set_game_color(self, target: str, color: SquareColor):
+        if target not in ["snake", "apple", "background"]:
+            print("ERROR: passed invalid string to Cli.__set_game_color()")
+            return
+
+        config = self.config_manager.config
+        match target:
+            case "snake":
+                config["game"]["snake_color"] = color
+            case "apple":
+                config["game"]["apple_color"] = color
+            case "background":
+                config["game"]["background_color"] = color
+        self.config_manager.change_config(config)
+
+        if self.game is None:
+            return
+        match target:
+            case "snake":
+                self.game.game_snake_color = color
+            case "apple":
+                self.game.game_apple_color = color
+            case "background":
+                self.game.game_background_color = color
+
     def __set_context(self):
         formatted_commands: List[dict[str, Any]] = []
         for command in self.commands:
@@ -98,6 +124,7 @@ class Cli:
             "start_game_function": self.__start_game,
             "stop_game_function": self.__stop_game,
             "set_game_speed_function": self.__set_game_speed,
+            "set_game_color_function": self.__set_game_color,
         }
 
     def __get_command_by_name(self, command_name: str) -> Command | None:

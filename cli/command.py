@@ -15,6 +15,7 @@ class Context(TypedDict):
     start_game_function: Callable[[str], None]
     stop_game_function: Callable[[], None]
     set_game_speed_function: Callable[[int], None]
+    set_game_color_function: Callable[[str, tuple[int, int, int]], None]
 
 
 class Command:

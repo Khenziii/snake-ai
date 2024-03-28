@@ -1,6 +1,14 @@
 from typing import List
 from cli.command import Command
-from cli.commands import help, exit, clear, start, stop, speed
+from cli.commands import (
+    help,
+    exit,
+    clear,
+    start,
+    stop,
+    speed,
+    color,
+)
 
 
 command_list: List[Command] = [
@@ -45,6 +53,14 @@ command_list: List[Command] = [
         "description": "Sets game's FPS (more -> snake moves faster)",
         "args": [5],
         "args_description": "First argument should be a valid integer. Default: 5.",
+        "context_required": True,
+    }),
+    color.ColorCommand({
+        "name": "color",
+        "description": "Sets game's colors.",
+        "args": ["snake", "(255,255,255)"],
+        "args_description": "First argument should be set to either: `snake`, `apple` or `background`.\nSecond "
+                            "argument should be a valid RGB color.\nDefault: 'snake' & '(255,255,255)'",
         "context_required": True,
     })
 ]
