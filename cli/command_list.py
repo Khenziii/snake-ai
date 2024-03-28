@@ -1,6 +1,6 @@
 from typing import List
 from cli.command import Command
-from cli.commands import help, exit, clear, start, stop
+from cli.commands import help, exit, clear, start, stop, speed
 
 
 command_list: List[Command] = [
@@ -37,6 +37,13 @@ command_list: List[Command] = [
         "description": "Stops the game",
         "args": [],
         "args_description": None,
+        "context_required": True,
+    }),
+    speed.SpeedCommand({
+        "name": "speed",
+        "description": "Sets game's FPS (more -> snake moves faster)",
+        "args": [10],
+        "args_description": "First argument should be a valid integer. Default: 10.",
         "context_required": True,
     })
 ]

@@ -74,6 +74,14 @@ class Cli:
 
         self.running = False
 
+    def __set_game_speed(self, speed: int):
+        if self.game is None:
+            print("No games are currently running!")
+            print("Use the `start` command to start one.")
+            return
+
+        self.game.game_speed = speed
+
     def __set_context(self):
         formatted_commands: List[dict[str, Any]] = []
         for command in self.commands:
@@ -88,6 +96,7 @@ class Cli:
             "exit_function": self.__exit,
             "start_game_function": self.__start_game,
             "stop_game_function": self.__stop_game,
+            "set_game_speed_function": self.__set_game_speed,
         }
 
     def __get_command_by_name(self, command_name: str) -> Command | None:

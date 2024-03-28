@@ -14,6 +14,7 @@ class Context(TypedDict):
     exit_function: Callable[[], None]
     start_game_function: Callable[[str], None]
     stop_game_function: Callable[[], None]
+    set_game_speed_function: Callable[[int], None]
 
 
 class Command:
