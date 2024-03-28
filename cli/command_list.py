@@ -8,6 +8,8 @@ from cli.commands import (
     stop,
     speed,
     color,
+    pause,
+    unpause,
 )
 
 
@@ -57,10 +59,24 @@ command_list: List[Command] = [
     }),
     color.ColorCommand({
         "name": "color",
-        "description": "Sets game's colors.",
+        "description": "Sets game's colors",
         "args": ["snake", "(255,255,255)"],
         "args_description": "First argument should be set to either: `snake`, `apple` or `background`.\nSecond "
                             "argument should be a valid RGB color.\nDefault: 'snake' & '(255,255,255)'",
+        "context_required": True,
+    }),
+    pause.PauseCommand({
+        "name": "pause",
+        "description": "Pauses the game",
+        "args": [],
+        "args_description": None,
+        "context_required": True,
+    }),
+    unpause.UnpauseCommand({
+        "name": "unpause",
+        "description": "Unpauses the game",
+        "args": [],
+        "args_description": None,
         "context_required": True,
     })
 ]

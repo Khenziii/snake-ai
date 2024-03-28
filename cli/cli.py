@@ -110,6 +110,30 @@ class Cli:
                 self.game.game_background_color = color
         self.game.rerender_board()
 
+    def __pause_game(self):
+        if self.game is None:
+            print("No games are currently running!")
+            print("Use the `start` command to start one.")
+            return
+
+        if self.game.paused:
+            print("The game is already paused!")
+            return
+
+        self.game.paused = True
+
+    def __unpause_game(self):
+        if self.game is None:
+            print("No games are currently running!")
+            print("Use the `start` command to start one.")
+            return
+
+        if not self.game.paused:
+            print("The game is not paused!")
+            return
+
+        self.game.paused = False
+
     def __set_context(self):
         formatted_commands: List[dict[str, Any]] = []
         for command in self.commands:
@@ -126,6 +150,8 @@ class Cli:
             "stop_game_function": self.__stop_game,
             "set_game_speed_function": self.__set_game_speed,
             "set_game_color_function": self.__set_game_color,
+            "pause_game_function": self.__pause_game,
+            "unpause_game_function": self.__unpause_game,
         }
 
     def __get_command_by_name(self, command_name: str) -> Command | None:

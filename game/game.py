@@ -43,6 +43,7 @@ class Game:
         self.running = False
         self.collected_apple = False
         self.display = None
+        self.paused = False
 
         if self.game_auto_run:
             self.run()
@@ -66,6 +67,9 @@ class Game:
         pygame.quit()
 
     def play_move(self):
+        if self.paused:
+            return
+
         if self.restart:
             self._restart_game()
 
