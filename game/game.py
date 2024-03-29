@@ -1,8 +1,9 @@
 import pygame
 from typing import TypedDict, List
+from random import randint
+from plotter.plotter import Plotter
 from game.square import Square, SquareConfig, SquareColor
 from game.types import Direction, Position, SquaresType
-from random import randint
 
 
 class GameConfig(TypedDict):
@@ -44,6 +45,14 @@ class Game:
         self.collected_apple = False
         self.display = None
         self.paused = False
+        self.current_try = 1
+
+        dummy_plotter_config = {
+            "x_axis_label": "Retries",
+            "y_axis_label": "Scores",
+            "window_title": "Score Graph"
+        }
+        self.plotter = Plotter(dummy_plotter_config)
 
         if self.game_auto_run:
             self.run()
@@ -56,15 +65,14 @@ class Game:
 
         self.__start_game()
 
+        self.running = True
         if not self.auto_handle_loop:
             return
 
-        self.running = True
         while self.running:
             self.play_move()
 
-        pygame.display.quit()
-        pygame.quit()
+        self.exit()
 
     def play_move(self):
         if self.paused:
@@ -79,13 +87,13 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 match event.key:
                     case pygame.K_w | pygame.K_UP:
-                        self.snake_direction = Direction.UP
+                        self.set_snake_direction(Direction.UP)
                     case pygame.K_s | pygame.K_DOWN:
-                        self.snake_direction = Direction.DOWN
+                        self.set_snake_direction(Direction.DOWN)
                     case pygame.K_a | pygame.K_LEFT:
-                        self.snake_direction = Direction.LEFT
+                        self.set_snake_direction(Direction.LEFT)
                     case pygame.K_d | pygame.K_RIGHT:
-                        self.snake_direction = Direction.RIGHT
+                        self.set_snake_direction(Direction.RIGHT)
 
         self.collected_apple = False
         self.__move_snake()
@@ -103,6 +111,13 @@ class Game:
                 continue
 
             tile["square"].change_color(self.game_background_color)
+
+    def exit(self):
+        self.plotter.exit()
+
+        self.running = False
+        pygame.display.quit()
+        pygame.quit()
 
     def __create_board(self):
         size = int(self.window_size_px / self.game_grid_size)
@@ -186,6 +201,18 @@ class Game:
     def __render_board(self):
         for tile in self.tiles:
             tile["square"].rerender()
+
+    def set_snake_direction(self, direction: Direction):
+        opposite_directions = {
+            Direction.UP: Direction.DOWN,
+            Direction.DOWN: Direction.UP,
+            Direction.LEFT: Direction.RIGHT,
+            Direction.RIGHT: Direction.LEFT,
+        }
+        if self.snake_direction == opposite_directions[direction]:
+            return
+
+        self.snake_direction = direction
 
     def __check_if_square_in_body(self, tile: SquaresType):
         snake_tiles_without_head = self.snake_tiles[::-1]
@@ -271,6 +298,9 @@ class Game:
     def _restart_game(self):
         self.__finish()
 
+        self.plotter.append(self.current_try, self.get_score())
+        self.current_try += 1
+
         for snake_tile in self.snake_tiles[:]:
             square = self.__get_square_by_x_and_y(snake_tile["x"], snake_tile["y"])
             self.__unset_square_as_snake(square)
@@ -289,3 +319,6 @@ class Game:
 
         self.__create_snake()
         self.__create_apples()
+
+    def get_score(self):
+        return len(self.snake_tiles) + 1 - self.game_snake_start_length

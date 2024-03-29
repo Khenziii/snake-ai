@@ -32,7 +32,6 @@ class Trainer:
 
     def train(self):
         if len(self.memory) < self.batch_size:
-            print("not training!")
             return
 
         batch = sample(self.memory, self.batch_size)

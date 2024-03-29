@@ -1,11 +1,12 @@
 from typing import TypedDict, List, Any
 from colorama import Fore, Style
-from threading import Thread
+from utils.thread_wrapper import ThreadWrapperConfig, ThreadWrapper
 from copy import deepcopy
 from cli.command import Command, Context
 from config.config import Config
 from game.game import GameConfig, Game
 from game.square import SquareColor
+from ai.wrapper import WrapperConfig, Wrapper
 from ai.ai_game import AIGame
 
 
@@ -22,6 +23,7 @@ class Cli:
         self.config_manager = config["config_manager"]
         self.running = True
         self.game: Game | AIGame | None = None
+        self.wrapper: Wrapper | None = None
 
         self.context: Context
         self.__set_context()
@@ -49,16 +51,28 @@ class Cli:
                 game_auto_run=False
             )
             self.game = Game(config)
-        else:
-            # config: GameConfig = self.config_manager.get_game_config(
-            #     game_auto_handle_loop=False,
-            #     game_finish_print=True
-            # )
-            # self.game = AIGame(config)
-            print("This argument is going to get implemented later!")
-            return
 
-        game_thread = Thread(target=self.game.run)
+            thread_config: ThreadWrapperConfig = {
+                "name": "game-thread",
+                "target": self.game.run,
+                "daemon": True,
+            }
+            game_thread = ThreadWrapper(thread_config)
+        else:
+            config: WrapperConfig = self.config_manager.get_wrapper_config(
+                auto_run=False,
+                finish_print=False
+            )
+            self.wrapper = Wrapper(config)
+            self.game = self.wrapper.env
+
+            thread_config: ThreadWrapperConfig = {
+                "name": "wrapper-thread",
+                "target": self.wrapper.run,
+                "daemon": True,
+            }
+            game_thread = ThreadWrapper(thread_config)
+
         game_thread.start()
 
     def __stop_game(self):
@@ -67,8 +81,14 @@ class Cli:
             print("Use the `start` command to start one.")
             return
 
-        self.game.running = False
+        if isinstance(self.wrapper, Wrapper):
+            self.wrapper.env.exit()
+            self.wrapper.running = False
+        else:
+            self.game.exit()
+
         self.game = None
+        self.wrapper = None
 
     def __exit(self):
         if self.game is not None:

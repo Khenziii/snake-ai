@@ -12,6 +12,7 @@ from cli.commands import (
     unpause,
     apple,
     grid_size,
+    threads,
 )
 
 command_list: List[Command] = [
@@ -41,7 +42,7 @@ command_list: List[Command] = [
         "name": "start",
         "description": "Starts the game",
         "args": ["human"],
-        "args_description": "First argument should be set to either `human` or `ai`",
+        "args_description": "First argument should be set to either `human` or `ai`. Default: `human`.",
         "context_required": True,
     }),
     stop.StopCommand({
@@ -93,5 +94,12 @@ command_list: List[Command] = [
         "args": [],
         "args_description": "First argument needs to be a valid int.",
         "context_required": True,
+    }),
+    threads.ThreadsCommand({
+        "name": "threads",
+        "description": "Shows a tree of current threads. Useful for development.",
+        "args": [],
+        "args_description": None,
+        "context_required": False,
     }),
 ]
