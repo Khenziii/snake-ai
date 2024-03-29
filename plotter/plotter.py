@@ -1,5 +1,5 @@
 from typing import TypedDict
-from threading import Thread
+from utils.thread_wrapper import ThreadWrapper
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 from warnings import filterwarnings
@@ -31,7 +31,10 @@ class Plotter:
         plt.title(self.title)
 
         self.animation = FuncAnimation(self.figure, self.__update, interval=1000)
-        self.thread = Thread(target=plt.show)
+        self.thread = ThreadWrapper({
+            "name": "plot-thread",
+            "target": plt.show,
+        })
         self.thread.start()
 
     def append(self, x, y):

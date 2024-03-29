@@ -12,6 +12,7 @@ from cli.commands import (
     unpause,
     apple,
     grid_size,
+    threads,
 )
 
 command_list: List[Command] = [
@@ -93,5 +94,12 @@ command_list: List[Command] = [
         "args": [],
         "args_description": "First argument needs to be a valid int.",
         "context_required": True,
+    }),
+    threads.ThreadsCommand({
+        "name": "threads",
+        "description": "Shows a tree of current threads. Useful for development.",
+        "args": [],
+        "args_description": None,
+        "context_required": False,
     }),
 ]

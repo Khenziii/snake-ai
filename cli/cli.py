@@ -1,6 +1,6 @@
 from typing import TypedDict, List, Any
 from colorama import Fore, Style
-from threading import Thread
+from utils.thread_wrapper import ThreadWrapperConfig, ThreadWrapper
 from copy import deepcopy
 from cli.command import Command, Context
 from config.config import Config
@@ -52,7 +52,11 @@ class Cli:
             )
             self.game = Game(config)
 
-            game_thread = Thread(target=self.game.run)
+            thread_config: ThreadWrapperConfig = {
+                "name": "game-thread",
+                "target": self.game.run,
+            }
+            game_thread = ThreadWrapper(thread_config)
         else:
             config: WrapperConfig = self.config_manager.get_wrapper_config(
                 auto_run=False,
@@ -61,7 +65,11 @@ class Cli:
             self.wrapper = Wrapper(config)
             self.game = self.wrapper.env
 
-            game_thread = Thread(target=self.wrapper.run)
+            thread_config: ThreadWrapperConfig = {
+                "name": "wrapper-thread",
+                "target": self.wrapper.run,
+            }
+            game_thread = ThreadWrapper(thread_config)
 
         game_thread.start()
 
