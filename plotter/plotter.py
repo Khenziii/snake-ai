@@ -30,7 +30,12 @@ class Plotter:
         plt.ylabel(self.y_axis_label)
         plt.title(self.title)
 
-        self.animation = FuncAnimation(self.figure, self.__update, interval=1000)
+        self.animation = FuncAnimation(
+            self.figure,
+            self.__update,
+            interval=1000,
+            cache_frame_data=False
+        )
         self.thread = ThreadWrapper({
             "name": "plot-thread",
             "target": plt.show,
