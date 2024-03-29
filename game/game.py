@@ -46,6 +46,7 @@ class Game:
         self.display = None
         self.paused = False
         self.current_try = 1
+        self.last_iteration = False
 
         dummy_plotter_config = {
             "x_axis_label": "Retries",
@@ -83,7 +84,7 @@ class Game:
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running = False
+                self.exit()
             elif event.type == pygame.KEYDOWN:
                 match event.key:
                     case pygame.K_w | pygame.K_UP:
@@ -94,6 +95,10 @@ class Game:
                         self.set_snake_direction(Direction.LEFT)
                     case pygame.K_d | pygame.K_RIGHT:
                         self.set_snake_direction(Direction.RIGHT)
+
+        # if self.exit() was ran, skip last move
+        if self.last_iteration:
+            return
 
         self.collected_apple = False
         self.__move_snake()
@@ -116,6 +121,8 @@ class Game:
         self.plotter.exit()
 
         self.running = False
+        self.last_iteration = True
+
         pygame.display.quit()
         pygame.quit()
 
