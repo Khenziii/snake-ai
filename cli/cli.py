@@ -55,6 +55,7 @@ class Cli:
             thread_config: ThreadWrapperConfig = {
                 "name": "game-thread",
                 "target": self.game.run,
+                "daemon": True,
             }
             game_thread = ThreadWrapper(thread_config)
         else:
@@ -68,6 +69,7 @@ class Cli:
             thread_config: ThreadWrapperConfig = {
                 "name": "wrapper-thread",
                 "target": self.wrapper.run,
+                "daemon": True,
             }
             game_thread = ThreadWrapper(thread_config)
 

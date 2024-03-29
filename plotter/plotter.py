@@ -34,6 +34,7 @@ class Plotter:
         self.thread = ThreadWrapper({
             "name": "plot-thread",
             "target": plt.show,
+            "daemon": True,
         })
         self.thread.start()
 
