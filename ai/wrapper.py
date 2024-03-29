@@ -36,6 +36,10 @@ class Wrapper:
 
         # Training loop
         while self.running:
+            if not self.env.running:
+                self.running = False
+                continue
+
             state = self.agent.get_state()
             action = self.agent.get_action(state)
             reward, is_game_over = self.env.handle_action(action)
