@@ -85,14 +85,14 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
-                match event.unicode:
-                    case "w":
+                match event.key:
+                    case pygame.K_w | pygame.K_UP:
                         self.snake_direction = Direction.UP
-                    case "s":
+                    case pygame.K_s | pygame.K_DOWN:
                         self.snake_direction = Direction.DOWN
-                    case "a":
+                    case pygame.K_a | pygame.K_LEFT:
                         self.snake_direction = Direction.LEFT
-                    case "d":
+                    case pygame.K_d | pygame.K_RIGHT:
                         self.snake_direction = Direction.RIGHT
 
         self.collected_apple = False
