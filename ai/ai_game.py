@@ -21,7 +21,8 @@ class AIGame(Game):
 
     def handle_action(self, action: int):
         possible_directions = list(Direction)
-        self.snake_direction = possible_directions[action]
+        new_direction = possible_directions[action]
+        self.set_snake_direction(new_direction)
 
         _, reward, is_game_over = self.play_move()
         return reward, is_game_over
