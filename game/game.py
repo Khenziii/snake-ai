@@ -87,13 +87,13 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 match event.key:
                     case pygame.K_w | pygame.K_UP:
-                        self.snake_direction = Direction.UP
+                        self.set_snake_direction(Direction.UP)
                     case pygame.K_s | pygame.K_DOWN:
-                        self.snake_direction = Direction.DOWN
+                        self.set_snake_direction(Direction.DOWN)
                     case pygame.K_a | pygame.K_LEFT:
-                        self.snake_direction = Direction.LEFT
+                        self.set_snake_direction(Direction.LEFT)
                     case pygame.K_d | pygame.K_RIGHT:
-                        self.snake_direction = Direction.RIGHT
+                        self.set_snake_direction(Direction.RIGHT)
 
         self.collected_apple = False
         self.__move_snake()
@@ -201,6 +201,18 @@ class Game:
     def __render_board(self):
         for tile in self.tiles:
             tile["square"].rerender()
+
+    def set_snake_direction(self, direction: Direction):
+        opposite_directions = {
+            Direction.UP: Direction.DOWN,
+            Direction.DOWN: Direction.UP,
+            Direction.LEFT: Direction.RIGHT,
+            Direction.RIGHT: Direction.LEFT,
+        }
+        if self.snake_direction == opposite_directions[direction]:
+            return
+
+        self.snake_direction = direction
 
     def __check_if_square_in_body(self, tile: SquaresType):
         snake_tiles_without_head = self.snake_tiles[::-1]
