@@ -8,6 +8,7 @@ from ai.model import NetConfig, Net
 from ai.agent import AgentConfig, Agent
 from ai.trainer import TrainerConfig, Trainer
 from ai.wrapper import WrapperConfig
+from plotter.plotter import PlotterConfig, Plotter
 
 
 class ConfigConfig(TypedDict):
@@ -40,7 +41,17 @@ class Config:
         with open(self.config_file_path, 'w') as file:
             file.write(json_string)
 
+    def get_plotter_config(self) -> PlotterConfig:
+        return {
+            "window_title": self.config["plot"]["title"],
+            "x_axis_label": self.config["plot"]["x_axis_label"],
+            "y_axis_label": self.config["plot"]["y_axis_label"],
+        }
+
     def get_game_config(self, game_auto_handle_loop: bool, game_finish_print: bool, game_auto_run: bool) -> GameConfig:
+        plotter_config = self.get_plotter_config()
+        plotter = Plotter(plotter_config)
+
         return {
             "window_size_px": self.config["window"]["size_px"],
             "window_title": self.config["window"]["title"],
@@ -54,6 +65,7 @@ class Config:
             "game_finish_print": game_finish_print,
             "game_auto_handle_loop": game_auto_handle_loop,
             "game_auto_run": game_auto_run,
+            "plotter": plotter,
         }
 
     def get_net_config(self) -> NetConfig:

@@ -19,6 +19,7 @@ class GameConfig(TypedDict):
     game_auto_handle_loop: bool
     game_finish_print: bool
     game_auto_run: bool
+    plotter: Plotter
 
 
 class Game:
@@ -35,6 +36,7 @@ class Game:
         self.auto_handle_loop = config["game_auto_handle_loop"]
         self.game_finish_print = config["game_finish_print"]
         self.game_auto_run = config["game_auto_run"]
+        self.plotter = config["plotter"]
 
         self.tiles: List[SquaresType] = []
         self.snake_tiles: List[Position] = []
@@ -46,13 +48,6 @@ class Game:
         self.display = None
         self.paused = False
         self.current_try = 1
-
-        dummy_plotter_config = {
-            "x_axis_label": "Retries",
-            "y_axis_label": "Scores",
-            "window_title": "Score Graph"
-        }
-        self.plotter = Plotter(dummy_plotter_config)
 
         if self.game_auto_run:
             self.run()
