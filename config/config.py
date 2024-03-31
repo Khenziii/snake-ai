@@ -79,6 +79,9 @@ class Config:
         return {
             "model": model,
             "env": env,
+            "epsilon_start": self.config["trainer"]["epsilon_start"],
+            "epsilon_end": self.config["trainer"]["epsilon_end"],
+            "epsilon_decay": self.config["trainer"]["epsilon_decay"],
         }
 
     def get_trainer_config(self, model: Net) -> TrainerConfig:
@@ -86,9 +89,6 @@ class Config:
             "memory_size": self.config["trainer"]["memory_size"],
             "batch_size": self.config["trainer"]["batch_size"],
             "gamma": self.config["trainer"]["gamma"],
-            "epsilon_start": self.config["trainer"]["epsilon_start"],
-            "epsilon_end": self.config["trainer"]["epsilon_end"],
-            "epsilon_decay": self.config["trainer"]["epsilon_decay"],
             "model": model,
         }
 

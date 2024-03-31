@@ -10,10 +10,6 @@ class TrainerConfig(TypedDict):
     memory_size: int
     batch_size: int
     gamma: float
-    epsilon_start: float
-    epsilon_end: float
-    epsilon_decay: float
-
 
 class Trainer:
     def __init__(self, config: TrainerConfig):
@@ -21,9 +17,6 @@ class Trainer:
         self.memory = deque(maxlen=config["memory_size"])
         self.batch_size = config["batch_size"]
         self.gamma = config["gamma"]
-        self.epsilon_start = config["epsilon_start"]
-        self.epsilon_end = config["epsilon_end"]
-        self.epsilon_decay = config["epsilon_decay"]
         self.optimizer = optim.Adam(self.model.parameters())
         self.criterion = nn.MSELoss()
 
@@ -53,6 +46,3 @@ class Trainer:
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
-
-        if self.epsilon_start > self.epsilon_end:
-            self.epsilon_start *= self.epsilon_decay

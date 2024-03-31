@@ -1,5 +1,6 @@
 from typing import TypedDict
 from random import randint
+from numpy.random import random
 from torch import argmax
 from utils.flatten_game_state import flatten_game_state
 from ai.ai_game import AIGame
@@ -10,12 +11,19 @@ from game.types import SquaresType
 class AgentConfig(TypedDict):
     env: AIGame
     model: Net
+    epsilon_start: float
+    epsilon_end: float
+    epsilon_decay: float
 
 
 class Agent:
     def __init__(self, config: AgentConfig):
         self.env = config["env"]
         self.model = config["model"]
+
+        self.epsilon_start = config["epsilon_start"]
+        self.epsilon_end = config["epsilon_end"]
+        self.epsilon_decay = config["epsilon_decay"]
         self.epsilon = None
 
         self.all_tiles = []
@@ -87,9 +95,8 @@ class Agent:
         moves = self.model(state)
 
         # exploring vs. exploiting
-        # TODO: work on this condition:
-        self.epsilon = 80 - self.env.current_try
-        if randint(0, 200) < self.epsilon:
+        self.epsilon = self.epsilon_start * self.epsilon_decay ** (self.env.current_try / self.epsilon_decay)
+        if random() < self.epsilon:
             # random move
             random_index = randint(0, len(moves) - 1)
             moves[random_index] = 1
