@@ -1,11 +1,6 @@
 from typing import TypedDict
-from utils.thread_wrapper import ThreadWrapper
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
-from warnings import filterwarnings
-
-# ignore matplotlib's warning about running in threads
-filterwarnings("ignore", category=UserWarning, module="threading")
 
 
 class PlotterConfig(TypedDict):
@@ -36,12 +31,8 @@ class Plotter:
             interval=1000,
             cache_frame_data=False
         )
-        self.thread = ThreadWrapper({
-            "name": "plot-thread",
-            "target": plt.show,
-            "daemon": True,
-        })
-        self.thread.start()
+        plt.ion()
+        plt.show(block=False)
 
     def append(self, x, y):
         self.x_data.append(x)
