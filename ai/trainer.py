@@ -11,6 +11,7 @@ class TrainerConfig(TypedDict):
     batch_size: int
     gamma: float
 
+
 class Trainer:
     def __init__(self, config: TrainerConfig):
         self.model = config["model"]

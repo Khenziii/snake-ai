@@ -42,9 +42,12 @@ class Agent:
 
         return False
 
-    def __amount_of_tiles_to_danger(self, direction: str, change_by: int):
+    def __amount_of_tiles_to_danger_or_apple(self, direction: str, square_type: str, change_by: int):
         if direction not in ["x", "y"]:
-            raise ValueError("Invalid direction passed to agent.__amount_of_tiles_to_danger()!")
+            raise ValueError("Invalid direction passed to agent.__amount_of_tiles_to_danger_or_apple()!")
+
+        if square_type not in ["danger", "apple"]:
+            raise ValueError("Invalid square_type passed to agent.__amount_of_tiles_to_danger_or_apple()!")
 
         distance = 0
         while True:
@@ -68,10 +71,17 @@ class Agent:
                 )
 
             if self.__check_if_danger(square):
+                if distance < 1:
+                    distance = -distance
+
+                # no apple's here
+                if square_type == "apple":
+                    distance = -1
+
                 break
 
-        if distance < 1:
-            distance = -distance
+            if square["apple"]:
+                break
 
         return distance
 
@@ -83,10 +93,14 @@ class Agent:
         self.snake_head = self.snake_tiles[-1]
 
         current_state = {
-            "danger_up": self.__amount_of_tiles_to_danger("y", -1),
-            "danger_down": self.__amount_of_tiles_to_danger("y", 1),
-            "danger_left": self.__amount_of_tiles_to_danger("x", -1),
-            "danger_right": self.__amount_of_tiles_to_danger("x", 1),
+            "danger_up": self.__amount_of_tiles_to_danger_or_apple(square_type="danger", direction="y", change_by=-1),
+            "danger_down": self.__amount_of_tiles_to_danger_or_apple(square_type="danger", direction="y", change_by=1),
+            "danger_left": self.__amount_of_tiles_to_danger_or_apple(square_type="danger", direction="x", change_by=-1),
+            "danger_right": self.__amount_of_tiles_to_danger_or_apple(square_type="danger", direction="x", change_by=1),
+            "apple_up": self.__amount_of_tiles_to_danger_or_apple(square_type="apple", direction="y", change_by=-1),
+            "apple_down": self.__amount_of_tiles_to_danger_or_apple(square_type="apple", direction="y", change_by=1),
+            "apple_left": self.__amount_of_tiles_to_danger_or_apple(square_type="apple", direction="x", change_by=-1),
+            "apple_right": self.__amount_of_tiles_to_danger_or_apple(square_type="apple", direction="x", change_by=1),
         }
         current_state_tensor = flatten_game_state(current_state)
         return current_state_tensor

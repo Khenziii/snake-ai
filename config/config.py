@@ -70,7 +70,7 @@ class Config:
 
     def get_net_config(self) -> NetConfig:
         return {
-            "input_nodes": 4,
+            "input_nodes": 8,
             "hidden_nodes": 32,
             "output_nodes": 4,
         }

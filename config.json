@@ -4,7 +4,7 @@
         "title": "Snake Game"
     },
     "game": {
-        "speed": 5,
+        "speed": 1,
         "grid_size": 10,
         "snake_start_length": 3,
         "apple_start_count": 2,

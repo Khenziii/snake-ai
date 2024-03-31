@@ -7,6 +7,10 @@ class gameState(TypedDict):
     danger_down: int
     danger_left: int
     danger_right: int
+    apple_up: int
+    apple_down: int
+    apple_left: int
+    apple_right: int
 
 
 def flatten_game_state(game_state: gameState):
