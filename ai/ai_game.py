@@ -17,7 +17,7 @@ class AIGame(Game):
         if self.collected_apple:
             reward = 10
 
-        return self.tiles, reward, self.restart
+        return [self.tiles, self.snake_tiles], reward, self.restart
 
     def handle_action(self, action: int):
         possible_directions = list(Direction)

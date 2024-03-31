@@ -70,8 +70,8 @@ class Config:
 
     def get_net_config(self) -> NetConfig:
         return {
-            "input_nodes": self.config["game"]["grid_size"] ** 2 * 4,
-            "hidden_nodes": 256,
+            "input_nodes": 4,
+            "hidden_nodes": 32,
             "output_nodes": 4,
         }
 
