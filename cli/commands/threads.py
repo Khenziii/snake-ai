@@ -1,6 +1,7 @@
 from cli.command import CommandConfig, Command, Context
 from utils.thread_wrapper import ThreadWrapper
-from threading import enumerate, current_thread
+import threading
+from multiprocessing import active_children
 
 
 class ThreadsCommand(Command):
@@ -14,10 +15,11 @@ class ThreadsCommand(Command):
         self.__get_all_threads()
         main_thread = self.all_threads[0]
         self.__recursively_print_tree([main_thread])
+        self.__print_multiprocess_list()
 
     def __get_all_threads(self):
-        threads = enumerate()
-        wrapper_threads = [current_thread()]
+        threads = threading.enumerate()
+        wrapper_threads = [threading.current_thread()]
 
         for thread in threads:
             if not isinstance(thread, ThreadWrapper):
@@ -44,3 +46,13 @@ class ThreadsCommand(Command):
                 children.append(thread)
 
         return children
+
+    def __print_multiprocess_list(self):
+        active_child_processes = active_children()
+        if len(active_child_processes) < 1:
+            return
+
+        print()
+        print("There are also some processes created by this process running:")
+        for index, process in enumerate(active_child_processes, start=1):
+            print(f"{index}. Name: {process.name} PID: {process.pid} Daemon: {process.daemon}")
