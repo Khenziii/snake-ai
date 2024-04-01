@@ -17,7 +17,6 @@ class GameConfig(TypedDict):
     game_apple_color: SquareColor
     game_background_color: SquareColor
     game_auto_handle_loop: bool
-    game_finish_print: bool
     game_auto_run: bool
     plotter: Plotter
 
@@ -34,7 +33,6 @@ class Game:
         self.game_apple_color = config["game_apple_color"]
         self.game_background_color = config["game_background_color"]
         self.auto_handle_loop = config["game_auto_handle_loop"]
-        self.game_finish_print = config["game_finish_print"]
         self.game_auto_run = config["game_auto_run"]
         self.plotter = config["plotter"]
 

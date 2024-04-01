@@ -4,7 +4,7 @@
         "title": "Snake Game"
     },
     "game": {
-        "speed": 1,
+        "speed": 5,
         "grid_size": 10,
         "snake_start_length": 3,
         "apple_start_count": 2,
@@ -13,8 +13,8 @@
         "background_color": "#000000"
     },
     "trainer": {
-        "memory_size": 10000,
-        "batch_size": 32,
+        "memory_size": 1000000,
+        "batch_size": 16,
         "gamma": 0.99,
         "epsilon_start": 1.0,
         "epsilon_end": 0.01,

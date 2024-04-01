@@ -13,7 +13,7 @@ class AIGame(Game):
     def get_state(self):
         reward = 0
         if self.restart:
-            reward = -100
+            reward = -10
         if self.collected_apple:
             reward = 10
 

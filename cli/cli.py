@@ -47,7 +47,6 @@ class Cli:
         if human:
             config: GameConfig = self.config_manager.get_game_config(
                 game_auto_handle_loop=True,
-                game_finish_print=False,
                 game_auto_run=False
             )
             self.game = Game(config)
@@ -60,8 +59,7 @@ class Cli:
             game_thread = ThreadWrapper(thread_config)
         else:
             config: WrapperConfig = self.config_manager.get_wrapper_config(
-                auto_run=False,
-                finish_print=False
+                auto_run=False
             )
             self.wrapper = Wrapper(config)
             self.game = self.wrapper.env
