@@ -39,4 +39,7 @@ class Wrapper:
             reward, is_game_over = self.env.handle_action(action)
             new_state = self.agent.get_state()
             self.trainer.remember(state, action, reward, new_state, is_game_over)
-            self.trainer.train()
+            self.trainer.train_short_memory()
+
+            if is_game_over:
+                self.trainer.train_long_memory()

@@ -42,6 +42,32 @@ class Agent:
 
         return False
 
+    # if axis == "x", returns 0 for right part of screen, 1 for left & 2 for both sides.
+    # if axis == "y", returns 0 for bottom part of screen, 1 for top & 2 for both sides.
+    def __check_where_apple(self, axis: str):
+        if axis not in ["x", "y"]:
+            raise ValueError("Invalid direction passed to agent.__check_where_apple()!")
+
+        apple_present_left_or_top = False
+        apple_present_right_or_bottom = False
+        apple_present_on_both_sides = False
+
+        for apple in self.env.apple_tiles:
+            if apple[axis] < self.env.snake_tiles[-1][axis]:
+                apple_present_left_or_top = True
+            elif apple[axis] > self.env.snake_tiles[-1][axis]:
+                apple_present_right_or_bottom = True
+
+        if apple_present_left_or_top and apple_present_right_or_bottom:
+            apple_present_on_both_sides = True
+
+        if apple_present_on_both_sides:
+            return 2
+        if apple_present_left_or_top:
+            return 1
+
+        return 0
+
     def __amount_of_tiles_to_danger_or_apple(self, direction: str, square_type: str, change_by: int):
         if direction not in ["x", "y"]:
             raise ValueError("Invalid direction passed to agent.__amount_of_tiles_to_danger_or_apple()!")
@@ -101,6 +127,8 @@ class Agent:
             "apple_down": self.__amount_of_tiles_to_danger_or_apple(square_type="apple", direction="y", change_by=1),
             "apple_left": self.__amount_of_tiles_to_danger_or_apple(square_type="apple", direction="x", change_by=-1),
             "apple_right": self.__amount_of_tiles_to_danger_or_apple(square_type="apple", direction="x", change_by=1),
+            "apple_location_x": self.__check_where_apple(axis="x"),
+            "apple_location_y": self.__check_where_apple(axis="y"),
         }
         current_state_tensor = flatten_game_state(current_state)
         return current_state_tensor

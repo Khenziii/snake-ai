@@ -69,8 +69,8 @@ class Config:
 
     def get_net_config(self) -> NetConfig:
         return {
-            "input_nodes": 8,
-            "hidden_nodes": 32,
+            "input_nodes": 10,
+            "hidden_nodes": 128,
             "output_nodes": 4,
         }
 

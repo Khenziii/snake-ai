@@ -11,6 +11,8 @@ class gameState(TypedDict):
     apple_down: int
     apple_left: int
     apple_right: int
+    apple_location_x: int
+    apple_location_y: int
 
 
 def flatten_game_state(game_state: gameState):
