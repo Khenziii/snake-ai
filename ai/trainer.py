@@ -1,18 +1,16 @@
 from typing import TypedDict
 from ai.model import Net
 from collections import deque
-from torch import nn, optim, tensor, int64, stack
+from torch import nn, optim
+from torch import max as torch_max
 from random import sample
 
 
 class TrainerConfig(TypedDict):
     model: Net
-    memory_size: int
+    memory_size: int  # each item in this list will take up about 250 bytes.
     batch_size: int
     gamma: float
-    epsilon_start: float
-    epsilon_end: float
-    epsilon_decay: float
 
 
 class Trainer:
@@ -21,38 +19,49 @@ class Trainer:
         self.memory = deque(maxlen=config["memory_size"])
         self.batch_size = config["batch_size"]
         self.gamma = config["gamma"]
-        self.epsilon_start = config["epsilon_start"]
-        self.epsilon_end = config["epsilon_end"]
-        self.epsilon_decay = config["epsilon_decay"]
-        self.optimizer = optim.Adam(self.model.parameters())
+        self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.criterion = nn.MSELoss()
+
+        self.model.train()
 
     def remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
 
-    def train(self):
-        if len(self.memory) < self.batch_size:
-            return
+    def __train(self, state, action, reward, next_state, done):
+        prediction = self.model(state)
+        target = prediction.clone()
 
-        batch = sample(self.memory, self.batch_size)
-        states, actions, rewards, new_states, dones = zip(*batch)
+        new_q = reward
+        if not done:
+            new_prediction = self.model(next_state)
+            new_q = reward + self.gamma * torch_max(new_prediction).item()
 
-        states = stack(states)
-        actions = tensor(actions, dtype=int64)
-        rewards = tensor(rewards, dtype=int64)
-        new_states = stack(new_states)
-        dones = tensor(dones, dtype=int64)
-
-        q_values = self.model(states)
-
-        next_q_values = self.model(new_states).max(1)[0]
-        target_q_values = rewards + (1 - dones) * self.gamma * next_q_values
-
-        loss = nn.functional.mse_loss(q_values.gather(1, actions.unsqueeze(1)), target_q_values.unsqueeze(1))
+        target[action] = new_q
 
         self.optimizer.zero_grad()
+        loss = self.criterion(target, prediction)
         loss.backward()
         self.optimizer.step()
 
-        if self.epsilon_start > self.epsilon_end:
-            self.epsilon_start *= self.epsilon_decay
+    def train_short_memory(self):
+        latest_memory = self.memory[-1]
+        state, action, reward, next_state, done = latest_memory
+
+        self.__train(state, action, reward, next_state, done)
+
+    def train_long_memory(self):
+        if len(self.memory) > self.batch_size:
+            batch = sample(self.memory, self.batch_size)
+        else:
+            batch = self.memory
+
+        states, actions, rewards, next_states, dones = zip(*batch)
+
+        for index, _ in enumerate(states):
+            state = states[index]
+            action = actions[index]
+            reward = rewards[index]
+            next_state = next_states[index]
+            done = dones[index]
+
+            self.__train(state, action, reward, next_state, done)

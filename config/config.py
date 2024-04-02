@@ -48,7 +48,7 @@ class Config:
             "y_axis_label": self.config["plot"]["y_axis_label"],
         }
 
-    def get_game_config(self, game_auto_handle_loop: bool, game_finish_print: bool, game_auto_run: bool) -> GameConfig:
+    def get_game_config(self, game_auto_handle_loop: bool, game_auto_run: bool) -> GameConfig:
         plotter_config = self.get_plotter_config()
         plotter = Plotter(plotter_config)
 
@@ -62,7 +62,6 @@ class Config:
             "game_snake_color": self.config["game"]["snake_color"],
             "game_apple_color": self.config["game"]["apple_color"],
             "game_background_color": self.config["game"]["background_color"],
-            "game_finish_print": game_finish_print,
             "game_auto_handle_loop": game_auto_handle_loop,
             "game_auto_run": game_auto_run,
             "plotter": plotter,
@@ -70,8 +69,8 @@ class Config:
 
     def get_net_config(self) -> NetConfig:
         return {
-            "input_nodes": self.config["game"]["grid_size"] ** 2 * 4,
-            "hidden_nodes": 256,
+            "input_nodes": 10,
+            "hidden_nodes": 128,
             "output_nodes": 4,
         }
 
@@ -79,6 +78,9 @@ class Config:
         return {
             "model": model,
             "env": env,
+            "epsilon_start": self.config["trainer"]["epsilon_start"],
+            "epsilon_end": self.config["trainer"]["epsilon_end"],
+            "epsilon_decay": self.config["trainer"]["epsilon_decay"],
         }
 
     def get_trainer_config(self, model: Net) -> TrainerConfig:
@@ -86,17 +88,13 @@ class Config:
             "memory_size": self.config["trainer"]["memory_size"],
             "batch_size": self.config["trainer"]["batch_size"],
             "gamma": self.config["trainer"]["gamma"],
-            "epsilon_start": self.config["trainer"]["epsilon_start"],
-            "epsilon_end": self.config["trainer"]["epsilon_end"],
-            "epsilon_decay": self.config["trainer"]["epsilon_decay"],
             "model": model,
         }
 
-    def get_wrapper_config(self, auto_run: bool, finish_print: bool) -> WrapperConfig:
+    def get_wrapper_config(self, auto_run: bool) -> WrapperConfig:
         game_config = self.get_game_config(
             game_auto_handle_loop=False,
             game_auto_run=True,
-            game_finish_print=False
         )
         env = AIGame(game_config)
         net_config = self.get_net_config()
@@ -113,7 +111,6 @@ class Config:
 
         return {
             "auto_run": auto_run,
-            "finish_print": finish_print,
             "env": env,
             "model": model,
             "agent": agent,

@@ -1,17 +1,23 @@
-from typing import List
-from game.types import SquaresType
+from typing import TypedDict
 from torch import tensor, float32
 
 
-def flatten_game_state(game_state: List[SquaresType]):
-    flatten = []
-    for square in game_state:
-        flatten.extend([
-            square["x"],
-            square["y"],
-            int(square["apple"]),
-            int(square["snake"])
-        ])
+class gameState(TypedDict):
+    danger_up: int
+    danger_down: int
+    danger_left: int
+    danger_right: int
+    apple_up: int
+    apple_down: int
+    apple_left: int
+    apple_right: int
+    apple_location_x: int
+    apple_location_y: int
 
-    tensor_flatten = tensor(flatten, dtype=float32)
+
+def flatten_game_state(game_state: gameState):
+    game_state_array = []
+    game_state_array.extend(game_state.values())
+
+    tensor_flatten = tensor(game_state_array, dtype=float32)
     return tensor_flatten

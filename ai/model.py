@@ -21,8 +21,6 @@ class Net(nn.Module):
         self.fc2 = nn.Linear(self.hidden_nodes, self.output_nodes)
 
     def forward(self, x):
-        # print(f"x's length: {len(x)}")
-
         x = self.fc1(x)
         x = nn.functional.relu(x)
         x = self.fc2(x)
