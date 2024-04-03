@@ -20,6 +20,8 @@ class Context(TypedDict):
     set_game_grid_size_function: Callable[[int], None]
     pause_game_function: Callable[[], None]
     unpause_game_function: Callable[[], None]
+    save_model_function: Callable[[str], None]
+    load_model_function: Callable[[str], None]
 
 
 class Command:

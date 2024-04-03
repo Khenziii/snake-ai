@@ -172,6 +172,26 @@ class Cli:
         else:
             print("Success! Restart the game, to apply changes.")
 
+    def __save_model(self, filename: str):
+        if self.wrapper is None:
+            print("No AI games are currently running! Start training a neural network using `start ai` command.")
+            return
+
+        self.wrapper.model.save(filename)
+
+    def __load_model(self, filename: str):
+        if self.wrapper is None:
+            print("You need to start an AI Game before loading your old model.")
+            print()
+            print("Suggested actions:")
+            print("> stop # make sure, that no games are already running")
+            print("> start ai")
+            print("> load")
+            print()
+            return
+
+        self.wrapper.model.load(filename)
+
     def __set_context(self):
         formatted_commands: List[dict[str, Any]] = []
         for command in self.commands:
@@ -192,6 +212,8 @@ class Cli:
             "unpause_game_function": self.__unpause_game,
             "set_game_apple_count_function": self.__set_apple_count,
             "set_game_grid_size_function": self.__set_grid_size,
+            "save_model_function": self.__save_model,
+            "load_model_function": self.__load_model,
         }
 
     def __get_command_by_name(self, command_name: str) -> Command | None:

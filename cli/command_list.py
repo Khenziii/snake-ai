@@ -13,6 +13,8 @@ from cli.commands import (
     apple,
     grid_size,
     threads,
+    save,
+    load,
 )
 
 command_list: List[Command] = [
@@ -97,9 +99,25 @@ command_list: List[Command] = [
     }),
     threads.ThreadsCommand({
         "name": "threads",
-        "description": "Shows a tree of current threads. Useful for development.",
+        "description": "Shows a tree of current threads. Useful for development",
         "args": [],
         "args_description": None,
         "context_required": False,
+    }),
+    save.SaveCommand({
+        "name": "save",
+        "description": "Saves current model's state into a file",
+        "args": ["model.pth"],
+        "args_description": "First argument is expected to be the target file to which model should be saved. "
+                            "Default: model.pth",
+        "context_required": True,
+    }),
+    load.LoadCommand({
+        "name": "load",
+        "description": "Loads old model's state from a file",
+        "args": ["model.pth"],
+        "args_description": "First argument is expected to be the target file from which model should be loaded. "
+                            "Default: model.pth",
+        "context_required": True,
     }),
 ]
