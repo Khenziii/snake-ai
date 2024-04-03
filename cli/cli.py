@@ -177,7 +177,10 @@ class Cli:
             print("No AI games are currently running! Start training a neural network using `start ai` command.")
             return
 
-        self.wrapper.model.save(filename)
+        try:
+            self.wrapper.model.save(filename)
+        except Exception as e:
+            print(f"An error occurred while saving the model: {e}")
 
     def __load_model(self, filename: str):
         if self.wrapper is None:
@@ -190,7 +193,10 @@ class Cli:
             print()
             return
 
-        self.wrapper.model.load(filename)
+        try:
+            self.wrapper.model.load(filename)
+        except Exception as e:
+            print(f"An error occurred while loading the model: {e}")
 
     def __set_context(self):
         formatted_commands: List[dict[str, Any]] = []
