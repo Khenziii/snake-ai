@@ -179,8 +179,9 @@ class Cli:
 
         try:
             self.wrapper.model.save(filename)
+            print("Success!")
         except Exception as e:
-            print(f"An error occurred while saving the model: {e}")
+            print(f"An error occurred while saving the model: {e}.")
 
     def __load_model(self, filename: str):
         if self.wrapper is None:
@@ -195,8 +196,9 @@ class Cli:
 
         try:
             self.wrapper.model.load(filename)
+            print("Success!")
         except Exception as e:
-            print(f"An error occurred while loading the model: {e}")
+            print(f"An error occurred while loading the model: {e}.")
 
     def __set_context(self):
         formatted_commands: List[dict[str, Any]] = []
