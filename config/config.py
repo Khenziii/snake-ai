@@ -26,14 +26,16 @@ class Config:
         with open(self.config_file_path, 'r') as file:
             self.config = json.load(file)
 
-        self.config["game"]["snake_color"] = hex_string_to_rgb_tuple(self.config["game"]["snake_color"])
+        self.config["game"]["snake_head_color"] = hex_string_to_rgb_tuple(self.config["game"]["snake_head_color"])
+        self.config["game"]["snake_body_color"] = hex_string_to_rgb_tuple(self.config["game"]["snake_body_color"])
         self.config["game"]["apple_color"] = hex_string_to_rgb_tuple(self.config["game"]["apple_color"])
         self.config["game"]["background_color"] = hex_string_to_rgb_tuple(self.config["game"]["background_color"])
 
     def change_config(self, new_config: dict):
         self.config = deepcopy(new_config)
 
-        new_config["game"]["snake_color"] = rgb_tuple_to_hex_string(new_config["game"]["snake_color"])
+        new_config["game"]["snake_head_color"] = rgb_tuple_to_hex_string(new_config["game"]["snake_head_color"])
+        new_config["game"]["snake_body_color"] = rgb_tuple_to_hex_string(new_config["game"]["snake_body_color"])
         new_config["game"]["apple_color"] = rgb_tuple_to_hex_string(new_config["game"]["apple_color"])
         new_config["game"]["background_color"] = rgb_tuple_to_hex_string(new_config["game"]["background_color"])
 
