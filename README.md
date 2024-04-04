@@ -4,7 +4,7 @@ snake-ai is an extensible and customizable snake game; that offers a CLI & suppo
 ### Features
 - CLI - A decent part of this project is its command line interface. It allows you to work more easily & gives you access to a bunch of useful perks (such as being able to change snake's color while the game is running). To list all available commands use the `help` command.
 
-[Video showcasing CLI](https://github.com/Khenziii/snake-ai/assets/126098761/04e4ddc7-174c-4617-88ad-d94130e8e7a9)
+[Video Showcasing CLI](https://github.com/Khenziii/snake-ai/assets/126098761/19baf974-d959-456b-8d67-c92d886b47bb)
 
 - Game - The snake game itself is created using pygame. It's cleanly written and open for extension.
 - Plotter - [matplotlib](https://matplotlib.org/) is being used to show nice graphs of achieved scores.
