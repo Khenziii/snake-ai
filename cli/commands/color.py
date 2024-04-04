@@ -18,8 +18,9 @@ class ColorCommand(Command):
         args_zero = self.args[0]
         args_one = self.args[1]
 
-        if args_zero not in ["snake", "apple", "background"]:
-            print("First argument must be either `snake`, `apple` or `background`. See `help color` for examples.")
+        if args_zero not in ["snake_head", "snake_body", "apple", "background"]:
+            print("First argument must be either `snake_head`, `snake_body`, `apple` or `background`. See `help "
+                  "color` for examples.")
             return
 
         try:
