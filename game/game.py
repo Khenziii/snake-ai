@@ -13,7 +13,8 @@ class GameConfig(TypedDict):
     game_grid_size: int
     game_snake_start_length: int
     game_apple_start_count: int
-    game_snake_color: SquareColor
+    game_snake_head_color: SquareColor
+    game_snake_body_color: SquareColor
     game_apple_color: SquareColor
     game_background_color: SquareColor
     game_auto_handle_loop: bool
@@ -29,7 +30,8 @@ class Game:
         self.game_grid_size = config["game_grid_size"]
         self.game_snake_start_length = config["game_snake_start_length"]
         self.game_apple_start_count = config["game_apple_start_count"]
-        self.game_snake_color = config["game_snake_color"]
+        self.game_snake_head_color = config["game_snake_head_color"]
+        self.game_snake_body_color = config["game_snake_body_color"]
         self.game_apple_color = config["game_apple_color"]
         self.game_background_color = config["game_background_color"]
         self.auto_handle_loop = config["game_auto_handle_loop"]
@@ -101,7 +103,11 @@ class Game:
     def rerender_board(self):
         for tile in self.tiles:
             if tile in self.snake_tiles:
-                tile["square"].change_color(self.game_snake_color)
+                if tile == self.snake_tiles[-1]:
+                    tile["square"].change_color(self.game_snake_head_color)
+                    continue
+
+                tile["square"].change_color(self.game_snake_body_color)
                 continue
 
             if tile in self.apple_tiles:
@@ -171,9 +177,14 @@ class Game:
             square: SquaresType = self.tiles[i]
             self.__set_square_as_snake(square)
 
-    def __set_square_as_snake(self, square: SquaresType) -> SquaresType:
+    def __set_square_as_snake(self, square: SquaresType, head: bool = False) -> SquaresType:
+        if head:
+            color = self.game_snake_head_color
+        else:
+            color = self.game_snake_body_color
+
         square.update({"snake": True})
-        square["square"].change_color(self.game_snake_color)
+        square["square"].change_color(color)
         self.snake_tiles.append(square)
 
         return square
@@ -194,9 +205,14 @@ class Game:
 
         return square
 
-    def __unset_square_as_apple(self, square: SquaresType, color: SquareColor | None = None, generate_new_apple: bool = True):
+    def __unset_square_as_apple(
+            self,
+            square: SquaresType,
+            color: SquareColor | None = None,
+            generate_new_apple: bool = True
+    ):
         if color is None:
-            new_color = self.game_snake_color
+            new_color = self.game_snake_head_color
         else:
             new_color = color
 
@@ -271,7 +287,10 @@ class Game:
         if self.__check_if_square_in_body(square_to_add):
             return
 
-        self.__set_square_as_snake(square_to_add)
+        self.__set_square_as_snake(square_to_add, True)
+        old_head_position = self.snake_tiles[-2]
+        old_head = self.get_square_by_x_and_y(old_head_position["x"], old_head_position["y"])
+        old_head["square"].change_color(self.game_snake_body_color)
 
     def __generate_apple(self):
         if len(self.snake_tiles) + len(self.apple_tiles) == self.game_grid_size ** 2:

@@ -103,14 +103,16 @@ class Cli:
         self.config_manager.change_config(config)
 
     def __set_game_color(self, target: str, color: SquareColor):
-        if target not in ["snake", "apple", "background"]:
+        if target not in ["snake_head", "snake_body", "apple", "background"]:
             print("ERROR: passed invalid string to Cli.__set_game_color()")
             return
 
         config = self.config_manager.config
         match target:
-            case "snake":
-                config["game"]["snake_color"] = color
+            case "snake_head":
+                config["game"]["snake_head_color"] = color
+            case "snake_body":
+                config["game"]["snake_body_color"] = color
             case "apple":
                 config["game"]["apple_color"] = color
             case "background":
@@ -120,8 +122,10 @@ class Cli:
         if self.game is None:
             return
         match target:
-            case "snake":
-                self.game.game_snake_color = color
+            case "snake_head":
+                self.game.game_snake_head_color = color
+            case "snake_body":
+                self.game.game_snake_body_color = color
             case "apple":
                 self.game.game_apple_color = color
             case "background":

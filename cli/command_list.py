@@ -64,9 +64,10 @@ command_list: List[Command] = [
     color.ColorCommand({
         "name": "color",
         "description": "Sets game's colors",
-        "args": ["snake", "(255,255,255)"],
-        "args_description": "First argument should be set to either: `snake`, `apple` or `background`.\nSecond "
-                            "argument should be a valid RGB color.\nDefault: 'snake' & '(255,255,255)'",
+        "args": ["snake_body", "(255,255,255)"],
+        "args_description": "First argument should be set to either: `snake_body`, `snake_head`, `apple` or "
+                            "`background`.\nSecond argument should be a valid RGB color.\nDefault: 'snake_body' & '("
+                            "255,255,255)'",
         "context_required": True,
     }),
     pause.PauseCommand({

@@ -8,7 +8,8 @@
         "grid_size": 10,
         "snake_start_length": 3,
         "apple_start_count": 5,
-        "snake_color": "#ffffff",
+        "snake_head_color": "#cccccc",
+        "snake_body_color": "#ffffff",
         "apple_color": "#ff0000",
         "background_color": "#000000"
     },
