@@ -56,6 +56,8 @@ class Game:
     def run(self):
         pygame.init()
 
+        icon = pygame.image.load('./resources/logo.png')
+        pygame.display.set_icon(icon)
         self.display = pygame.display.set_mode((self.window_size_px, self.window_size_px))
         pygame.display.set_caption(self.window_title)
 
