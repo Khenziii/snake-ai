@@ -1,5 +1,6 @@
-from typing import TypedDict
 import json
+import os
+from typing import TypedDict
 from copy import deepcopy
 from utils.hex_rgb_convert import hex_string_to_rgb_tuple, rgb_tuple_to_hex_string
 from game.game import GameConfig
@@ -10,6 +11,36 @@ from ai.trainer import TrainerConfig, Trainer
 from ai.wrapper import WrapperConfig
 from plotter.plotter import PlotterConfig, Plotter
 
+
+default_config = {
+    "window": {
+        "size_px": 1000,
+        "title": "Snake Game"
+    },
+    "game": {
+        "speed": 5,
+        "grid_size": 10,
+        "snake_start_length": 3,
+        "apple_start_count": 5,
+        "snake_head_color": "#cccccc",
+        "snake_body_color": "#ffffff",
+        "apple_color": "#ff0000",
+        "background_color": "#000000"
+    },
+    "trainer": {
+        "memory_size": 1000000,
+        "batch_size": 500,
+        "gamma": 0.99,
+        "epsilon_start": 1.0,
+        "epsilon_end": 0.01,
+        "epsilon_decay": 0.995
+    },
+    "plot": {
+        "title": "Score Graph",
+        "x_axis_label": "Retries",
+        "y_axis_label": "Scores"
+    }
+}
 
 class ConfigConfig(TypedDict):
     config_file_path: str
@@ -23,6 +54,13 @@ class Config:
         self.load_config()
 
     def load_config(self):
+        if not os.path.exists(self.config_file_path):
+            os.makedirs(os.path.dirname(self.config_file_path))
+
+            json_string = json.dumps(default_config, indent=4)
+            with open(self.config_file_path, 'w') as file:
+                file.write(json_string)
+
         with open(self.config_file_path, 'r') as file:
             self.config = json.load(file)
 
