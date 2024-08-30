@@ -21,7 +21,7 @@ All contributions are greatly appreciated. PRs will be reviewed.
 
 ```shell
 $ poetry install
-$ SNAKE_AI_ENV=dev python3 main.py
+$ SNAKE_AI_ENV=dev poetry run python3 main.py
 ```
 
 If you're using NixOS, you can run those commands instead:
