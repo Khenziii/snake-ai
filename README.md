@@ -27,7 +27,7 @@ $ SNAKE_AI_ENV=dev poetry run python3 main.py
 If you're using NixOS, you can run those commands instead:
 
 ```shell
-$ nix-shell
+$ nix develop
 $ python3 main.py
 ```
 
