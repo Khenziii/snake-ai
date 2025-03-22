@@ -6,6 +6,7 @@ authors = ["Khenzii <khenzii.was.taken@gmail.com>"]
 license = "GPL-3.0"
 readme = "README.md"
 packages = [
+    { include = "main.py" },
     { include = "ai" },
     { include = "cli" },
     { include = "config" },
@@ -18,7 +19,7 @@ packages = [
 snake-ai = "main:main"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "~3.10"
 colorama = "0.4.6"
 contourpy = "1.2.0"
 cycler = "0.12.1"
