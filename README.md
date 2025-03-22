@@ -13,11 +13,7 @@ snake-ai is an extensible and customizable snake game; that offers a CLI & suppo
 - AI - You can train, save and load neural networks at almost no effort. CLI and plotter make it convenient to track progress of your models.
 - Config - thanks to the [config module](https://github.com/Khenziii/snake-ai/blob/master/config/config.py), a lot of settings can be managed directly from a .json file.
 
-### Contributing
-
-All contributions are greatly appreciated. PRs will be reviewed.
-
-#### Development Environment
+### Entering the development environment
 
 ```shell
 $ poetry install
